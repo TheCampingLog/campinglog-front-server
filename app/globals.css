@@ -10,6 +10,9 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-campingsig: #faf6f0;
+  --color-campinggreen: #4a6920;
+  --color-campingorange: #e18d41;
 }
 
 @media (prefers-color-scheme: dark) {
