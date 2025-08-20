@@ -4,7 +4,7 @@
 import { useState, useEffect } from "react";
 import { ResponseGetRanking } from "@/lib/types/member/response";
 
-function RankingList() {
+function MembersRank() {
   const [rankings, setRankings] = useState<ResponseGetRanking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,4 +55,4 @@ function RankingList() {
   );
 }
 
-export default RankingList;
+export default MembersRank;
