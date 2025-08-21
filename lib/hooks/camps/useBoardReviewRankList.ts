@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import fetcher from "@/lib/utils/fetcher";
 import { backendUrl } from "@/lib/config";
-import { ResponseGetBoardReviewRank } from "@/lib/types/campinfo/response";
+import { ResponseGetBoardReviewRank } from "@/lib/types/camps/response";
 
 function useBoardReviewRankList() {
   const { isLoading, data, error, mutate } = useSWR<

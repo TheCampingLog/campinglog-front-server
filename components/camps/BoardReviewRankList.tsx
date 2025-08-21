@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import useBoardReviewRankList from "@/lib/hooks/campinfo/useBoardReviewRankList";
+import useBoardReviewRankList from "@/lib/hooks/camps/useBoardReviewRankList";
 import Image from "next/image";
 import campDefault from "@/public/image/camp-default.png";
 

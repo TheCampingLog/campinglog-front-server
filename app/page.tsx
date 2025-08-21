@@ -1,5 +1,5 @@
 import BoardsRank from "@/components/board/BoardsRank";
-import BoardReviewRankList from "@/components/campinfo/BoardReviewRankList";
+import BoardReviewRankList from "@/components/camps/BoardReviewRankList";
 import MembersRank from "@/components/member/MembersRank";
 
 export default function Page() {
