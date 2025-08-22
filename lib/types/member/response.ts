@@ -29,6 +29,14 @@ export interface ResponseGetMemberActivitySummary {
   joinDate: string;
 }
 
+export interface ResponseGetMemberBoards {
+    title: string;
+    content: string;
+    boardImage: string;
+    createdAt: string;
+    boardId: string;
+}
+
 export interface Member {
   email: string;
   name: string;

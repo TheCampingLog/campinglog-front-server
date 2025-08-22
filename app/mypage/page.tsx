@@ -83,12 +83,10 @@ export default function MemberMypage() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="container mx-auto p-6">
       <Mypage
         member={member}
         profileImage={profileImage}
         activitySummary={activitySummary}
       />
-    </div>
   );
 }
