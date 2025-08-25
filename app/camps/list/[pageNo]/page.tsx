@@ -20,10 +20,9 @@ export default function CampListPage() {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">🏕️ 캠핑장 목록</h1>
-            <CampLatestList camps={campLatestList} />{" "}
-           
+        <div className="max-w-[1200px] mx-auto p-2">
+            <h1 className="text-2xl font-bold mb-2">캠핑장 목록</h1>
+            <CampLatestList camps={campLatestList} />
         </div>
     );
 }
