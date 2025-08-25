@@ -53,6 +53,14 @@ export interface ActivitySummary {
   totalComments: number;
 }
 
+export interface ResponseGetMemberComments{
+  commentId: string;
+  content: string;
+  createdAt: string;
+  nickName: string;
+  boardId: string;
+}
+
 enum MemberGrade {
   GREEN,
   BLUE,
