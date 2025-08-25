@@ -61,6 +61,17 @@ export interface ResponseGetMemberComments{
   boardId: string;
 }
 
+export interface ResponseGetMemberReviews{
+  reviewContent: string; //review
+  reviewScore: number; //review
+  facltNm: string;     //외부 api
+  firstImageUrl: string; //외부 api
+  mapX: number;
+  mapY: number;
+  createAt: string;
+  id: string;
+}
+
 enum MemberGrade {
   GREEN,
   BLUE,
