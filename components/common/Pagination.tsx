@@ -1,68 +1,88 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
-interface PaginationProps {
-  currentPage: number;
+interface Pagination {
+  page: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+  hasPrev: boolean;
+  hasNext: boolean;
+  goToPage: (page: number) => void;
+  prevPage: () => void;
+  nextPage: () => void;
+  maxVisible?: number; // 기본 4개
 }
 
 export default function Pagination({
-  currentPage,
+  page,
   totalPages,
-  onPageChange,
-}: PaginationProps) {
-  if (totalPages <= 1) {
-    return null;
-  }
-
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  hasPrev,
+  hasNext,
+  goToPage,
+  prevPage,
+  nextPage,
+  maxVisible = 4,
+}: Pagination) {
+  const getPageNumbers = () => {
+    let start = Math.max(1, page - Math.floor(maxVisible / 2));
+    let end = start + maxVisible - 1;
+    if (end > totalPages) {
+      end = totalPages;
+      start = Math.max(1, end - maxVisible + 1);
+    }
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
 
   return (
-    <nav aria-label="Page navigation" className="flex justify-center">
-      <ul className="flex items-center space-x-1">
-        {/* 이전 버튼 */}
-        <li>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => onPageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            aria-label="이전 페이지"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Button>
-        </li>
+    <div className="mt-8 flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+    {/* 맨 처음 */}
+    <button
+      className="px-2 py-1 sm:px-3 sm:py-1 border rounded-md disabled:opacity-50 hover:bg-gray-200 text-sm sm:text-base"
+      onClick={() => goToPage(1)}
+      disabled={page === 1}
+    >
+      {"<<"}
+    </button>
 
-        {/* 페이지 번호 버튼 */}
-        {pageNumbers.map((pageNumber) => (
-          <li key={pageNumber}>
-            <Button
-              variant={currentPage === pageNumber ? "default" : "outline"}
-              size="icon"
-              onClick={() => onPageChange(pageNumber)}
-              aria-current={currentPage === pageNumber ? "page" : undefined}
-            >
-              {pageNumber}
-            </Button>
-          </li>
-        ))}
+    {/* 이전 */}
+    <button
+      className="px-2 py-1 sm:px-3 sm:py-1 border rounded-md disabled:opacity-50 hover:bg-gray-200 text-sm sm:text-base"
+      onClick={prevPage}
+      disabled={!hasPrev}
+    >
+      {"<"}
+    </button>
 
-        {/* 다음 버튼 */}
-        <li>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            aria-label="다음 페이지"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </li>
-      </ul>
-    </nav>
+    {/* 페이지 번호 */}
+    {getPageNumbers().map((num) => (
+      <button
+        key={num}
+        onClick={() => goToPage(num)}
+        className={`px-2 py-1 sm:px-3 sm:py-1 border rounded-md text-sm sm:text-base transition-colors ${
+          num === page
+            ? "bg-campingorange text-white font-bold"
+            : "hover:bg-gray-200 hover:text-campingorange-600"
+        }`}
+      >
+        {num}
+      </button>
+    ))}
+
+    {/* 다음 */}
+    <button
+      className="px-2 py-1 sm:px-3 sm:py-1 border rounded-md disabled:opacity-50 hover:bg-gray-200 text-sm sm:text-base"
+      onClick={nextPage}
+      disabled={!hasNext}
+    >
+      {">"}
+    </button>
+
+    {/* 맨 끝 */}
+    <button
+      className="px-2 py-1 sm:px-3 sm:py-1 border rounded-md disabled:opacity-50 hover:bg-gray-200 text-sm sm:text-base"
+      onClick={() => goToPage(totalPages)}
+      disabled={page === totalPages}
+    >
+      {">>"}
+    </button>
+  </div>
   );
 }
