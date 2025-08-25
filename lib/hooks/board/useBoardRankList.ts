@@ -1,11 +1,11 @@
 import useSWR from "swr";
 import fetcher from "@/lib/utils/fetcher";
 import { ResponseGetBoardRank } from "@/lib/types/board/response";
-import { backendUrl } from "@/lib/config";
 
 function useBoardRankList() {
+  const key = "/api/boards/rank";
   const { isLoading, data, error, mutate } = useSWR<ResponseGetBoardRank[]>(
-    backendUrl + `/api/boards/rank`,
+    key,
     fetcher
   );
 
