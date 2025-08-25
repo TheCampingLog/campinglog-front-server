@@ -25,7 +25,7 @@ export default function AuthButtons() {
           if (data) {
             setIsLoggedIn(true);
             if (data.profileImage) {
-              setProfileImg(data.profileImage);
+              setProfileImg(process.env.NEXT_PUBLIC_IMAGE_ROOT_URL + data.profileImage);
             }
           }
         })
