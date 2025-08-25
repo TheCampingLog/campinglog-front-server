@@ -12,7 +12,9 @@
   --font-mono: var(--font-geist-mono);
   --color-campingsig: #faf6f0;
   --color-campinggreen: #4a6920;
+  --color-campinggreen-600: #3b541a; 
   --color-campingorange: #e18d41;
+  --color-campingorange-600: #bf6a23;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,6 +22,51 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+/* 반짝임 효과 */
+@keyframes sparkle {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.8);
+  }
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 125%;
+  }
+}
+
+.badge-sparkle {
+  animation: sparkle 2s infinite ease-in-out;
+}
+
+.badge-shine {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.badge-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: shine 7s infinite;
 }
 
 body {
