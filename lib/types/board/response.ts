@@ -18,3 +18,49 @@ export interface ResponseGetBoardRank {
   rank: number;
   viewCount: number;
 }
+
+export interface ResponseGetBoardByKeyword {
+  boardId: string;
+  title: string;
+  content: string;
+  categoryName: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  boardImage: string;
+  createAt: string;
+}
+
+export interface ResponseGetBoardDetail {
+  boardId: string;
+  title: string;
+  content: string;
+  categoryName: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  boardImage: string;
+  createAt: string;
+}
+
+export interface ResponseGetComments {
+  commentId: string;
+  content: string;
+  nickname: string;
+  createAt: string;
+}
+
+export interface ResponseGetLike {
+  boardId: string;
+  likeCount: number;
+}
+
+export interface ResponseGetBoardByCategoryWrapper {
+  content: ResponseGetBoardByCategory[];
+  totalPages: number;
+  totalElements: number;
+  pageNumber: number;
+  pageSize: number;
+  isFirst: boolean;
+  isLast: boolean;
+}

@@ -1,6 +1,12 @@
-import sampleBoards from "@/lib/constants/sample-boards.json";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  return NextResponse.json(sampleBoards, { status: 200 });
+const BACKEND_URL = process.env.BACKEND_URL;
+
+export async function POST(request: Request) {
+  const response = await fetch(`${BACKEND_URL}/api/boards`, {
+    method: "POST",
+    body: request.body,
+  });
+  const data = await response.json();
+  return NextResponse.json(data, { status: 200 });
 }
