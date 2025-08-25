@@ -1,7 +1,7 @@
 "use client";
 
 import useMemberBoards from "@/lib/hooks/member/useMemberBoards";
-import Pagination from "@/components/member/Pagination";
+import Pagination from "@/components/common/Pagination";
 import Link from "next/link";
 
 
