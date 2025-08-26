@@ -17,8 +17,24 @@ export default function BoardPage() {
     PAGE_SIZE
   );
 
-  const handlePageChange = (page: number) => {
+  const totalPages = paginatedData?.totalPages ?? 1;
+  const hasPrev = currentPage > 1;
+  const hasNext = currentPage < totalPages;
+
+  const goToPage = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const prevPage = () => {
+    if (hasPrev) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const nextPage = () => {
+    if (hasNext) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   if (isLoading) return <div className="text-center py-10">로딩 중...</div>;
@@ -38,10 +54,15 @@ export default function BoardPage() {
 
       <div className="mt-8">
         {paginatedData && paginatedData.totalPages > 0 && (
+          // Pagination 컴포넌트에 새로운 props 전달
           <Pagination
-            currentPage={currentPage}
-            totalPages={paginatedData.totalPages}
-            onPageChange={handlePageChange}
+            page={currentPage}
+            totalPages={totalPages}
+            hasPrev={hasPrev}
+            hasNext={hasNext}
+            goToPage={goToPage}
+            prevPage={prevPage}
+            nextPage={nextPage}
           />
         )}
       </div>
