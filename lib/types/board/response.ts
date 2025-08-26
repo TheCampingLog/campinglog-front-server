@@ -64,6 +64,7 @@ export interface ResponseGetBoardDetail {
   boardImage: string;
   createdAt: string;
   nickname: string;
+  email: string;
   comments: ResponseGetComments[];
 }
 
