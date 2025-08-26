@@ -36,6 +36,7 @@ export interface ResponseGetComments {
   content: string;
   nickname: string;
   createdAt: string;
+  email: string;
 }
 
 export interface ResponseGetLike {

@@ -85,7 +85,6 @@ export default function CommentSection({ boardId }: CommentSectionProps) {
       setCurrentPage(currentPage + 1);
     }
   };
-  // --- 여기까지 수정 ---
 
   return (
     <div className="mt-12">
@@ -120,7 +119,12 @@ export default function CommentSection({ boardId }: CommentSectionProps) {
         {error && <p>댓글을 불러오는데 실패했습니다.</p>}
         {comments && comments.length > 0
           ? comments.map((comment) => (
-              <CommentItem key={comment.commentId} comment={comment} />
+              <CommentItem
+                key={comment.commentId}
+                comment={comment}
+                boardId={boardId}
+                mutate={mutate}
+              />
             ))
           : !isLoading && <p>아직 댓글이 없습니다.</p>}
       </div>
