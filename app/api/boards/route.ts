@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers"; // 쿠키를 가져오기 위해 임포트
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_ROOT_URL;
 
 export async function POST(request: Request) {
   // 1. 클라이언트 요청에 담긴 쿠키에서 accessToken을 가져옵니다.
