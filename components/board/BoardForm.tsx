@@ -43,32 +43,45 @@ export default function BoardForm() {
     }
     setIsLoading(true);
 
-    // 전송할 데이터를 RequestAddBoard 타입에 맞게 준비합니다.
-    // email과 boardImage는 현재 폼에 없으므로, 우선 빈 값으로 보냅니다.
-    // 백엔드 API 라우트에서 email은 토큰으로 처리하므로 여기서 보낼 필요 없습니다.
-    const newPost: Omit<RequestAddBoard, "email" | "boardImage"> = {
-      title: postData.title,
-      content: postData.content,
-      categoryName: postData.categoryName,
-    };
-
     try {
-      const response = await fetch("/api/boards", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newPost),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "게시글 등록에 실패했습니다.");
+      // 1. localStorage에서 직접 토큰을 가져옵니다.
+      const token = localStorage.getItem("Authorization");
+      if (!token) {
+        // 토큰이 없으면 로그인 페이지로 보내거나 알림을 띄웁니다.
+        alert("로그인이 필요합니다.");
+        router.push("/login");
+        return;
       }
 
+      // 2. email 필드를 제거한 게시글 데이터를 준비합니다.
+      const newPost = {
+        title: postData.title,
+        content: postData.content,
+        categoryName: postData.categoryName,
+        boardImage: "",
+      };
+
+      // 3. Next.js API 라우트가 아닌, 백엔드 서버로 직접 요청을 보냅니다.
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_ROOT_URL}/api/boards`, // 백엔드 URL 직접 사용
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // 4. localStorage에서 가져온 토큰을 Authorization 헤더에 직접 추가합니다.
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newPost),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "게시글 등록에 실패했습니다.");
+      }
+
+      const result = await response.json();
       alert("게시글이 성공적으로 등록되었습니다.");
-      // 백엔드에서 boardId를 반환해준다고 가정하고 상세 페이지로 이동합니다.
       router.push(`/board/${result.boardId}`);
     } catch (error) {
       console.error("게시글 등록 실패:", error);
