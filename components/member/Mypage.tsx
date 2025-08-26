@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ResponseGetMember, ResponseGetMemberActivitySummary } from "@/lib/types/member/response";
 
 interface MemberMypageProps {
@@ -66,9 +67,11 @@ function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
 
       {/* 버튼 */}
       <div className="flex gap-3 mt-6 justify-end">
-        <button className="bg-campinggreen text-white px-4 py-2 rounded-md">
-          개인정보 수정
-        </button>
+        <Link href="/mypage/password">
+          <button className="bg-campinggreen text-white px-4 py-2 rounded-md">
+            개인정보 수정
+          </button>
+        </Link>
         <button className="bg-red-500 text-white px-4 py-2 rounded-md">
           회원 탈퇴
         </button>
