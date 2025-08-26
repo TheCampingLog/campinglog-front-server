@@ -66,4 +66,9 @@ export interface ResponseGetCampDetail {
   posblFcltyCl: string;// 주변 이용가능시설
   doNm: string;
   sigunguNm: string;
+} 
+
+export interface ResponseGetBoardReview {
+  reviewAverage: number;
+  reviewCount: number;
 }

@@ -1,4 +1,4 @@
-import { backendUrl } from "@/lib/config";
+
 import { ResponseGetCampDetail } from "@/lib/types/camps/response";
 import { useEffect, useState } from "react";
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ResponseGetCampDetail } from "@/lib/types/camps/response";
+import { ResponseGetCampDetail, ResponseGetBoardReview } from "@/lib/types/camps/response";
 import { backendUrl } from "@/lib/config";
 
 
