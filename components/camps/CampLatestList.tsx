@@ -1,12 +1,13 @@
 'use client';
 
 import { ResponseGetCampLatestList } from "@/lib/types/camps/response";
-import { MapPin } from "lucide-react";
-import { Phone } from "lucide-react";
+import Link from "next/link";
+import { MapPin, Phone } from "lucide-react";
 
 interface CampLatestListProps {
-  camps: ResponseGetCampLatestList[] | undefined;
+  camps: ResponseGetCampLatestList[];
 }
+
 function CampLatestList(  { camps }: CampLatestListProps) {
   // useCampLatestList 훅 사용
 
@@ -21,16 +22,17 @@ function CampLatestList(  { camps }: CampLatestListProps) {
     <div className="mt-5 mb-10">
       <div className="flex flex-col items-center justify-center gap-6">
         {camps.map((camp, index) => (
-          <div
+          <Link
             key={index}
-            className="bg-[#FAF6F0] w-full rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+            href={`/camps/detail/${camp.mapX}/${camp.mapY}`}
+            className="bg-[#FAF6F0] w-full block rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
           >
             <div className="flex flex-row items-center">
               <div className="w-64 h-40 p-5 rounded-lg overflow-hidden flex-shrink-0">
                 <img
                   src={camp.firstImageUrl || "/image/camp-default.png"}
                   alt={camp.facltNm || "캠핑장 이미지"}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full rounded-lg object-cover"
                 />
               </div>
               <div className="flex-1 p-3">
@@ -58,7 +60,7 @@ function CampLatestList(  { camps }: CampLatestListProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
