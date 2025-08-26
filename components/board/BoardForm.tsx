@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // useEffect 임포트
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,17 +12,40 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ImageIcon, Bold, Italic, Underline, List } from "lucide-react";
-import { RequestAddBoard } from "@/lib/types/board/request"; // 방금 만든 타입 임포트
+// 게시글 상세 정보 타입을 임포트해야 합니다. (경로는 실제 파일 위치에 맞게 조정)
+import { ResponseGetBoardDetail } from "@/lib/types/board/response";
 
-export default function BoardForm() {
+// 1. 컴포넌트가 받을 props 타입을 정의합니다.
+interface BoardFormProps {
+  isEditMode?: boolean; // 수정 모드 여부
+  boardId?: string; // 수정할 게시글의 ID
+  initialData?: ResponseGetBoardDetail; // 수정할 게시글의 기존 데이터
+}
+
+// 2. props를 받도록 컴포넌트 시그니처를 수정합니다.
+export default function BoardForm({
+  isEditMode = false,
+  boardId,
+  initialData,
+}: BoardFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [postData, setPostData] = useState({
     title: "",
-    categoryName: "", // 백엔드 타입에 맞게 category -> categoryName으로 변경
+    categoryName: "",
     content: "",
   });
+
+  // 3. 수정 모드일 때, props로 받은 기존 데이터로 폼을 채웁니다.
+  useEffect(() => {
+    if (isEditMode && initialData) {
+      setPostData({
+        title: initialData.title,
+        categoryName: initialData.categoryName,
+        content: initialData.content,
+      });
+    }
+  }, [isEditMode, initialData]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -35,71 +58,77 @@ export default function BoardForm() {
     setPostData((prev) => ({ ...prev, categoryName: value }));
   };
 
+  // 4. handleSubmit 함수를 수정/등록 모두 처리하도록 변경합니다.
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!postData.categoryName) {
-      alert("카테고리를 선택해주세요.");
-      return;
-    }
     setIsLoading(true);
 
     try {
-      // 1. localStorage에서 직접 토큰을 가져옵니다.
       const token = localStorage.getItem("Authorization");
       if (!token) {
-        // 토큰이 없으면 로그인 페이지로 보내거나 알림을 띄웁니다.
         alert("로그인이 필요합니다.");
         router.push("/login");
         return;
       }
 
-      // 2. email 필드를 제거한 게시글 데이터를 준비합니다.
-      const newPost = {
+      // 백엔드에 보낼 데이터 (등록/수정 공통)
+      const requestBody = {
         title: postData.title,
         content: postData.content,
         categoryName: postData.categoryName,
         boardImage: "",
       };
 
-      // 3. Next.js API 라우트가 아닌, 백엔드 서버로 직접 요청을 보냅니다.
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_ROOT_URL}/api/boards`, // 백엔드 URL 직접 사용
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // 4. localStorage에서 가져온 토큰을 Authorization 헤더에 직접 추가합니다.
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(newPost),
-        }
-      );
+      // isEditMode 값에 따라 URL과 HTTP 메서드를 동적으로 결정
+      const url = isEditMode
+        ? `${process.env.NEXT_PUBLIC_BACKEND_ROOT_URL}/api/boards/${boardId}`
+        : `${process.env.NEXT_PUBLIC_BACKEND_ROOT_URL}/api/boards`;
+      const method = isEditMode ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "게시글 등록에 실패했습니다.");
+        throw new Error(
+          errorData.message || "요청 처리 중 오류가 발생했습니다."
+        );
       }
 
       const result = await response.json();
-      alert("게시글이 성공적으로 등록되었습니다.");
-      router.push(`/board/${result.boardId}`);
+      alert(result.message); // 백엔드가 보내주는 성공 메시지 (예: "게시글이 수정되었습니다.")
+
+      // 성공 후 상세 페이지로 이동
+      router.push(`/board/${boardId || result.boardId}`);
     } catch (error) {
-      console.error("게시글 등록 실패:", error);
+      console.error("요청 실패:", error);
       alert(error instanceof Error ? error.message : "알 수 없는 오류 발생");
     } finally {
       setIsLoading(false);
     }
   };
 
+  // 5. JSX 부분도 isEditMode에 따라 동적으로 변경되도록 수정합니다.
   return (
     <form
       onSubmit={handleSubmit}
       className="bg-white rounded-lg shadow-sm border border-gray-200 p-8"
     >
-      <h1 className="text-2xl font-semibold text-gray-800 mb-8">게시글 작성</h1>
+      <h1 className="text-2xl font-semibold text-gray-800 mb-8">
+        {isEditMode ? "게시글 수정" : "게시글 작성"}
+      </h1>
       <div className="space-y-6">
-        {/* 카테고리 선택 */}
-        <Select onValueChange={handleCategoryChange} name="categoryName">
+        <Select
+          onValueChange={handleCategoryChange}
+          value={postData.categoryName} // value prop 추가
+          name="categoryName"
+        >
           <SelectTrigger className="w-64 p-4 border-gray-300 rounded-md">
             <SelectValue placeholder="카테고리를 선택해주세요" />
           </SelectTrigger>
@@ -111,7 +140,6 @@ export default function BoardForm() {
           </SelectContent>
         </Select>
 
-        {/* 제목 입력 */}
         <Input
           name="title"
           value={postData.title}
@@ -121,7 +149,6 @@ export default function BoardForm() {
           required
         />
 
-        {/* 내용 입력 (에디터) */}
         <Textarea
           name="content"
           value={postData.content}
@@ -131,14 +158,13 @@ export default function BoardForm() {
           required
         />
 
-        {/* 게시하기 버튼 */}
         <div className="flex justify-center pt-8">
           <Button
             type="submit"
             className="bg-[#7a8a65] hover:bg-[#4a6920] text-white px-12 py-3 rounded-md text-lg"
             disabled={isLoading}
           >
-            {isLoading ? "등록 중..." : "게시하기"}
+            {isLoading ? "처리 중..." : isEditMode ? "수정하기" : "게시하기"}
           </Button>
         </div>
       </div>
