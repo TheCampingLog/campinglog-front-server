@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const BACKEND_URL = process.env.BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_ROOT_URL;
 
 export async function GET(request: Request) {
   // 들어온 요청에서 URL의 쿼리 파라미터를 가져옵니다.
