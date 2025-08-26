@@ -72,6 +72,10 @@ export interface ResponseGetMemberReviews{
   id: string;
 }
 
+export interface ResponseVerifyPassword {
+  success: boolean; // 백엔드에서 인증 성공 여부 반환한다고 가정
+}
+
 enum MemberGrade {
   GREEN,
   BLUE,
