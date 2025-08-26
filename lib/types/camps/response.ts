@@ -36,31 +36,31 @@ export interface ResponseGetCampLatestList {
 }
 
 export interface ResponseGetCampDetail {
-  facltNm: string;// 야영장명
+  facltNm: string;// 야영장명0
   lineIntro: string;// 한줄소개
   intro: string;// 소개
   hvofBgnde: string;// 휴장기간 휴무기간 시작일
   hvofEnddle: string;// 휴장기간 휴무기간 종료일
-  featureNm: string;// 특징
-  induty: string;// 업종
+  featureNm: string;// 특징0
+  induty: string;// 업종0
   lctCl: string;// 입지구분
-  addr1: string;// 주소
-  addr2: string;// 주소상세
-  tel: string;// 전화
-  homepage: string;// 홈페이지
+  addr1: string;// 주소0
+  addr2: string;// 주소상세0
+  tel: string;// 전화0
+  homepage: string;// 홈페이지0
   resveUrl: string;// 예약 페이지
-  siteBottomCl1: string;// 잔디
-  siteBottomCl2: string;// 파쇄석
-  siteBottomCl3: string;// 테크
-  siteBottomCl4: string;// 자갈
-  siteBottomCl5: string;// 맨흙
-  operPdCl: string;// 운영기간
-  operDeCl: string;// 운영일
-  toiletCo: string;// 화장실 개수
-  swrmCo: string;// 샤워실 개수
-  wtrplCo: string;// 개수대 개수
+  siteBottomCl1: string;// 잔디0
+  siteBottomCl2: string;// 파쇄석0
+  siteBottomCl3: string;// 테크0
+  siteBottomCl4: string;// 자갈0
+  siteBottomCl5: string;// 맨흙0
+  operPdCl: string;// 운영기간0
+  operDeCl: string;// 운영일0
+  toiletCo: string;// 화장실 개수0
+  swrmCo: string;// 샤워실 개수0
+  wtrplCo: string;// 개수대 개수0
   sbrsCl: string;// 부대시설
-  firstImageUrl: string;// 대표이미지
+  firstImageUrl: string;// 대표이미지0
   animalCmgCl: string;// 애완동물 출입
   eqpmnLendCl: string;// 캠핑장비 대여
   posblFcltyCl: string;// 주변 이용가능시설
