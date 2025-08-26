@@ -17,7 +17,7 @@ export default function Header() {
           커뮤니티
         </Link>
         <Link
-          href="/camping"
+          href="/camps/list"
           className="px-4 py-2 hover:text-campinggreen hover:border-b-2 hover:border-campinggreen transition-all duration-75"
         >
           캠핑

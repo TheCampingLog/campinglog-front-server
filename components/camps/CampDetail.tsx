@@ -69,7 +69,7 @@ function CampDetail({ camp }: CampDetailProps ) {
             
             <div className="mt-6">
                 <h2 className="text-lg font-semibold mb-3">캠핑장 소개</h2>
-                <p className="text-gray-700">{camp.intro}</p>
+                <p className="text-gray-700">{camp.intro || "소개 정보가 없습니다."}</p>
             </div>
         </div>
     );
