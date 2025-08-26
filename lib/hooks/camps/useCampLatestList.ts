@@ -1,17 +1,24 @@
 import useSWR from "swr";
 import fetcher from "@/lib/utils/fetcher";
 import { backendUrl } from "@/lib/config";
-import { ResponseGetCampLatestList } from "@/lib/types/camps/response";
+import { ResponseGetCampWrapper } from "@/lib/types/camps/response";
 
-function useCampLatestList(pageNo: number) {
-  const { isLoading, data, error, mutate } = useSWR<ResponseGetCampLatestList[]>(
-    `${backendUrl}/api/camps/list/${pageNo}`,
+function useCampLatestList<T>(pageNo: number, size: number) {
+  const { isLoading, data, error, mutate } = useSWR<ResponseGetCampWrapper<T>>(
+    `${backendUrl}/api/camps/list?pageNo=${pageNo}&size=${size}`,
     fetcher
   );
 
   return {
     isLoading,
-    campLatestList: data,
+    campLatestList: data?.items || [],
+    paginationData: data ? {
+      currentPage: data.page,
+      totalPages: data.totalPage,
+      totalCount: data.totalCount,
+      hasNext: data.hasNext,
+      size: data.size
+    } : null,
     error,
     mutate,
   };
