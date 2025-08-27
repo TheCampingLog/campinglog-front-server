@@ -3,7 +3,7 @@ import fetcher from "@/lib/utils/fetcher";
 import { backendUrl } from "@/lib/config";
 import { ResponseGetCampWrapper } from "@/lib/types/camps/response";
 
-function useCampLatestList<T>(pageNo: number, size: number) {
+function useCampList<T>(pageNo: number, size: number) {
   const { isLoading, data, error, mutate } = useSWR<ResponseGetCampWrapper<T>>(
     `${backendUrl}/api/camps/list?pageNo=${pageNo}&size=${size}`,
     fetcher
@@ -23,4 +23,4 @@ function useCampLatestList<T>(pageNo: number, size: number) {
     mutate,
   };
 }
-export default useCampLatestList;
+export default useCampList;
