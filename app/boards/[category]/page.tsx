@@ -2,17 +2,26 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import BoardList from "@/components/board/BoardList";
 import Pagination from "@/components/common/Pagination";
 import useBoardList from "@/lib/hooks/board/useBoardList";
 import { Button } from "@/components/ui/button";
 
-export default function BoardPage() {
+export default function BoardCategoryPage() {
+  const params = useParams();
+
+  const category = Array.isArray(params.category)
+    ? params.category[0]
+    : params.category;
+
+  const categoryName = decodeURIComponent(category || "");
+
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 3;
 
   const { paginatedData, boards, isLoading, error } = useBoardList(
-    "정보",
+    categoryName,
     currentPage,
     PAGE_SIZE
   );
@@ -44,9 +53,10 @@ export default function BoardPage() {
   return (
     <main className="max-w-4xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">정보 게시판</h1>
+        {/* 4. 페이지 제목도 동적으로 변경합니다. */}
+        <h1 className="text-3xl font-bold">{categoryName} 게시판</h1>
         <Link href="/board/write" passHref>
-          <Button>글쓰기</Button>
+          <Button variant={"camping-solid"}>글쓰기</Button>
         </Link>
       </div>
 
@@ -54,7 +64,6 @@ export default function BoardPage() {
 
       <div className="mt-8">
         {paginatedData && paginatedData.totalPages > 0 && (
-          // Pagination 컴포넌트에 새로운 props 전달
           <Pagination
             page={currentPage}
             totalPages={totalPages}
