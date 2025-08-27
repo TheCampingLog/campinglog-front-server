@@ -78,3 +78,13 @@ export interface ResponseGetCommentWrapper {
   isFirst: boolean;
   isLast: boolean;
 }
+
+export interface ResponseGetBoardByKeywordWrapper {
+  content: ResponseGetBoardByKeyword[];
+  totalPages: number;
+  totalElements: number;
+  pageNumber: number;
+  pageSize: number;
+  isFirst: boolean;
+  isLast: boolean;
+}
