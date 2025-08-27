@@ -4,9 +4,9 @@ import Image from "next/image";
 import logoImg from "@/public/image/logo.png";
 
 const communityCategories = [
-  { name: "정보", href: "/boards/정보" },
-  { name: "질문", href: "/boards/question" },
-  { name: "자유", href: "/boards/free" },
+  { name: "캠핑장", href: "/boards/캠핑장" },
+  { name: "캠핑장비", href: "/boards/캠핑장비" },
+  { name: "초보꿀팁", href: "/boards/초보꿀팁" },
 ];
 
 export default function Header() {
@@ -20,7 +20,7 @@ export default function Header() {
         <div className="relative group">
           {/* 메인 메뉴 링크 */}
           <Link
-            href="/boards/정보"
+            href="/boards/캠핑장"
             className="px-4 py-2 text-gray-600 hover:text-campinggreen font-medium transition-colors duration-200"
           >
             커뮤니티
