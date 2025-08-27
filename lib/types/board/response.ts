@@ -7,7 +7,7 @@ export interface ResponseGetBoardByCategory {
   likeCount: number;
   commentCount: number;
   boardImage: string;
-  createAt: string;
+  createdAt: string;
 }
 
 export interface ResponseGetBoardRank {
@@ -28,7 +28,7 @@ export interface ResponseGetBoardByKeyword {
   likeCount: number;
   commentCount: number;
   boardImage: string;
-  createAt: string;
+  createdAt: string;
 }
 
 export interface ResponseGetComments {
@@ -87,4 +87,15 @@ export interface ResponseGetBoardByKeywordWrapper {
   pageSize: number;
   isFirst: boolean;
   isLast: boolean;
+}
+
+export interface BoardListItemType {
+  boardId: number;
+  title: string;
+  content: string;
+  categoryName: string;
+  createdAt: string;
+  viewCount: number;
+  commentCount: number;
+  likeCount: number;
 }

@@ -11,7 +11,7 @@ export default function Header() {
           <Image src={logoImg} alt="Logo" className="h-8 w-30" />
         </Link>
         <Link
-          href="/community"
+          href="/boards/캠핑장"
           className="hover:text-campingsig hover:border-b-2 hover:border-campingsig transition-all duration-75"
         >
           커뮤니티
