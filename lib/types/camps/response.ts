@@ -72,3 +72,16 @@ export interface ResponseGetBoardReview {
   reviewAverage: number;
   reviewCount: number;
 }
+
+export interface ResponseGetCampByKeywordList {
+  facltNm: string;
+  doNm: string;
+  sigunguNm: string;
+  addr1: string;
+  addr2: string;
+  mapX: string;
+  mapY: string;
+  tel: string;
+  sbrsCl: string;
+  firstImageUrl: string;
+}

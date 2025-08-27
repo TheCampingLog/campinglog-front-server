@@ -1,11 +1,11 @@
 'use client';
 
-import { ResponseGetCampLatestList } from "@/lib/types/camps/response";
+import { ResponseGetCampLatestList, ResponseGetCampByKeywordList } from "@/lib/types/camps/response";
 import Link from "next/link";
 import { MapPin, Phone } from "lucide-react";
 
 interface CampLatestListProps {
-  camps: ResponseGetCampLatestList[];
+  camps: ResponseGetCampLatestList[] | ResponseGetCampByKeywordList[];
 }
 
 function CampLatestList(  { camps }: CampLatestListProps) {
@@ -17,7 +17,6 @@ function CampLatestList(  { camps }: CampLatestListProps) {
     );
   }
 
-  // 이미지 둥글게 안 돼...
   return (
     <div className="mt-5 mb-10">
       <div className="flex flex-col items-center justify-center gap-6">
