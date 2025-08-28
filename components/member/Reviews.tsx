@@ -34,7 +34,7 @@ export default function Reviews() {
         {reviews.map((r) => (
           <li key={r.id}>
             <Link
-              href={`/reviews/${r.id}`}
+              href={`/camps/detail/${r.mapX}/${r.mapY}`}
               className="block bg-[#E6F7FF] rounded-xl p-4 flex gap-4 
               hover:shadow-md hover:bg-[#d6f0ff] transition cursor-pointer 
               min-h-36 sm:min-h-36 lg:min-h-36"

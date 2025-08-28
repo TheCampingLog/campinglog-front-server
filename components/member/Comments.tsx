@@ -32,7 +32,7 @@ export default function Comments(){
         {comments.map((c) => (
           <li key={c.commentId}>
             <Link
-              href={`/boards/${c.commentId}`}
+              href={`/board/${c.boardId}`}
               className="block bg-[#FFF9E6] rounded-xl p-4 flex gap-4 
               hover:shadow-md hover:bg-[#fff3cc] transition cursor-pointer 
               min-h-36 sm:min-h-36 lg:min-h-36"
