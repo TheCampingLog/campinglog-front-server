@@ -3,40 +3,55 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import ConfirmModal from "@/components/common/ConfirmModal";
-import CommentSection from "@/components/comment/CommentSection"; // 댓글 섹션 임포트
+import CommentSection from "@/components/comment/CommentSection";
 import { ResponseGetBoardDetail } from "@/lib/types/board/response";
-import { ResponseGetMember } from "@/lib/types/member/response"; // 회원 정보 타입 임포트
+import { ResponseGetMember } from "@/lib/types/member/response";
+
+// 1. 좋아요 기능을 위한 훅과 컴포넌트를 임포트합니다.
+import useLike from "@/lib/hooks/board/useLike";
+import LikeButton from "@/components/board/LikeButton";
 
 export default function BoardDetailPage() {
   const router = useRouter();
   const params = useParams();
   const boardId = params.boardId as string;
 
-  // 상태 변수들
   const [board, setBoard] = useState<ResponseGetBoardDetail | null>(null);
   const [currentUser, setCurrentUser] = useState<ResponseGetMember | null>(
     null
-  ); // 현재 로그인 유저 정보
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 게시글 데이터와 로그인 유저 정보를 불러오는 로직
+  // 2. useLike 훅을 호출하여 상태와 핸들러를 가져옵니다.
+  //    board 데이터가 로드되기 전의 초기값을 제공합니다.
+  const { isLiked, likeCount, handleLikeClick } = useLike({
+    boardId,
+    initialIsLiked: board?.isLiked ?? false,
+    initialLikeCount: board?.likeCount ?? 0,
+  });
+
   useEffect(() => {
     if (!boardId) return;
 
     const fetchData = async () => {
       try {
-        // 게시글 상세 정보 가져오기
+        const token = localStorage.getItem("Authorization");
+
+        // 3. 게시글 상세 정보를 가져올 때, 인증 토큰을 함께 보냅니다.
+        //    백엔드는 이 토큰을 보고 현재 유저의 좋아요 여부(isLiked)를 계산해줘야 합니다.
         const boardRes = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_ROOT_URL}/api/boards/${boardId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_ROOT_URL}/api/boards/${boardId}`,
+          {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          }
         );
         if (!boardRes.ok) throw new Error("게시글을 불러오는 데 실패했습니다.");
         const boardData: ResponseGetBoardDetail = await boardRes.json();
         setBoard(boardData);
 
-        // 로그인한 사용자인 경우, 내 정보 가져오기 (작성자 확인용)
-        const token = localStorage.getItem("Authorization");
+        // 로그인한 사용자 정보 가져오기 (작성자 확인용)
         if (token) {
           const userRes = await fetch(
             `${process.env.NEXT_PUBLIC_BACKEND_ROOT_URL}/api/members/mypage`,
@@ -59,7 +74,6 @@ export default function BoardDetailPage() {
     fetchData();
   }, [boardId]);
 
-  // 삭제 버튼 클릭 시 실행될 함수 (기존과 동일)
   const handleDeleteConfirm = async () => {
     try {
       const token = localStorage.getItem("Authorization");
@@ -121,6 +135,14 @@ export default function BoardDetailPage() {
             __html: board.content.replace(/\n/g, "<br />"),
           }}
         />
+
+        {/* 4. LikeButton 컴포넌트를 원하는 위치에 배치하고, 훅에서 받은 값들을 전달합니다. */}
+        <LikeButton
+          isLiked={isLiked}
+          likeCount={likeCount}
+          onClick={handleLikeClick}
+        />
+
         {/* 작성자일 경우에만 수정/삭제 버튼 표시 */}
         {isAuthor && (
           <div className="flex justify-end gap-3 mt-8 pt-4 border-t">
