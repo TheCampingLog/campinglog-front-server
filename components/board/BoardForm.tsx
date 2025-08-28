@@ -133,10 +133,9 @@ export default function BoardForm({
             <SelectValue placeholder="카테고리를 선택해주세요" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="자유게시판">자유게시판</SelectItem>
-            <SelectItem value="질문게시판">질문게시판</SelectItem>
-            <SelectItem value="캠핑후기">캠핑 후기</SelectItem>
-            <SelectItem value="캠핑팁">캠핑 팁</SelectItem>
+            <SelectItem value="캠핑장">캠핑장</SelectItem>
+            <SelectItem value="캠핑장비">캠핑장비</SelectItem>
+            <SelectItem value="초보꿀팁">초보꿀팁</SelectItem>
           </SelectContent>
         </Select>
 

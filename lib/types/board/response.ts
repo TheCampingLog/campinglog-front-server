@@ -66,6 +66,7 @@ export interface ResponseGetBoardDetail {
   createdAt: string;
   nickname: string;
   email: string;
+  isLiked: boolean;
   comments: ResponseGetComments[];
 }
 
@@ -97,5 +98,10 @@ export interface BoardListItemType {
   createdAt: string;
   viewCount: number;
   commentCount: number;
+  likeCount: number;
+}
+
+export interface ResponseToggleLike {
+  liked: boolean;
   likeCount: number;
 }
