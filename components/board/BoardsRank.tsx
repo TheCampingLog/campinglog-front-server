@@ -35,7 +35,7 @@ function BoardsRank() {
         <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-4 cursor-pointer hover:shadow-lg transition-shadow duration-300">
           <div className="relative">
             <Image
-              src={imageUrl + "/images/board/" + mainBoard.boardImage}
+              src={mainBoard.boardImage}
               alt="캠핑장 이미지"
               width={400}
               height={256}
@@ -64,7 +64,7 @@ function BoardsRank() {
             <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
               <div className="relative">
                 <Image
-                  src={imageUrl + "/images/board/" + board.boardImage}
+                  src={board.boardImage}
                   alt="캠핑 이미지"
                   width={400}
                   height={256}
