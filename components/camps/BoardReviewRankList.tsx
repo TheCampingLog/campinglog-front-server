@@ -36,27 +36,32 @@ function BoardReviewRankList() {
       </h3>
       <div className="grid grid-cols-3 gap-4">
         {boardReviewRanks.map((board, index) => (
-          <div
+          <Link
             key={index}
-            className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+            href={`/camps/detail/${board.mapX}/${board.mapY}`}
           >
-            <Image
-              src={board.firstImageUrl || campDefault}
-              alt={"캠핑장 이미지"}
-              width={400}
-              height={256}
-              className="w-full h-32 object-cover"
-            />
-            <div className="p-3">
-              <h4 className="font-medium text-gray-800 text-sm mb-1 line-clamp-2">
-                {board.facltNm}
-              </h4>
-              <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
-                <div className="flex gap-1"><Star className="w-3 h-3 mt-0.5 text-[#4A6920]" fill="currentColor" />{board.reviewAverage.toFixed(1).toString()}</div>
-                <span>{board.doNm} {board.sigunguNm}</span>
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+            >
+              <Image
+                src={board.firstImageUrl || campDefault}
+                alt={"캠핑장 이미지"}
+                width={400}
+                height={256}
+                className="w-full h-32 object-cover"
+              />
+              <div className="p-3">
+                <h4 className="font-medium text-gray-800 text-sm mb-1 line-clamp-2">
+                  {board.facltNm}
+                </h4>
+                <div className="flex items-center justify-between text-xs text-gray-500 mt-2">
+                  <div className="flex gap-1"><Star className="w-3 h-3 mt-0.5 text-[#4A6920]" fill="currentColor" />{board.reviewAverage.toFixed(1).toString()}</div>
+                  <span>{board.doNm} {board.sigunguNm}</span>
+                </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

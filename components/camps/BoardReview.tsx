@@ -16,7 +16,7 @@ function BoardReview({ camp }: BoardReviewProps ) {
         <div className="mt-30 mb-10 text-center">
             {/* 별점 정보 */}
             <div className="flex justify-center items-center gap-4 mb-2">
-                <StarRating reviewAverage={reviewAverage} />
+                <StarRating reviewAverage={reviewAverage} starSize="w-8 h-8" gap="gap-3"/>
                 <div className="flex gap-1">
                     <div className="text-4xl font-bold pb-2 text-black">
                         {reviewAverage.toFixed(1)}

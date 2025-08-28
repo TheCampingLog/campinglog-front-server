@@ -85,3 +85,15 @@ export interface ResponseGetCampByKeywordList {
   sbrsCl: string;
   firstImageUrl: string;
 }
+
+
+export interface ResponseGetReviewList {
+  email: string;
+  nickname: string;
+  reviewContent: string;
+  reviewScore: number;
+  reviewImage: string;
+  createAt: string;
+  updateAt: string;
+}
+

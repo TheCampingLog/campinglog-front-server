@@ -1,5 +1,5 @@
 'use client';
-
+import { useSearchParams } from "next/navigation" 
 import { ResponseGetCampLatestList, ResponseGetCampByKeywordList } from "@/lib/types/camps/response";
 import Link from "next/link";
 import { MapPin, Phone } from "lucide-react";
@@ -10,6 +10,10 @@ interface CampLatestListProps {
 
 function CampLatestList(  { camps }: CampLatestListProps) {
   // useCampLatestList 훅 사용
+  const searchParams = useSearchParams();
+  const pageNo = searchParams.get("pageNo") ?? "1";
+  const size = searchParams.get("size") ?? "4";
+  
 
   if(!camps || camps.length === 0) {
     return (

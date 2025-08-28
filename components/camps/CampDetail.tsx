@@ -13,7 +13,7 @@ function CampDetail({ camp }: CampDetailProps ) {
         <div className="mt-5 mb-10">
             
             <div className="flex mb-4 gap-8">
-                <div className="w-1/2">
+                <div className="w-1/2 max-h-96">
                     <img
                       src={camp.firstImageUrl || "/image/camp-default.png"}
                       alt={camp.facltNm || "캠핑장 이미지"}
