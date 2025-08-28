@@ -67,14 +67,16 @@ function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
 
       {/* 버튼 */}
       <div className="flex gap-3 mt-6 justify-end">
-        <Link href="/mypage/password">
+        <Link href="/mypage/password?next=edit">
           <button className="bg-campinggreen text-white px-4 py-2 rounded-md">
             개인정보 수정
           </button>
         </Link>
+        <Link href="/mypage/password?next=withdraw">
         <button className="bg-red-500 text-white px-4 py-2 rounded-md">
           회원 탈퇴
         </button>
+        </Link>
       </div>
 </main>
 

@@ -1,18 +1,57 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import useMemberPassword from "@/lib/hooks/member/useMemberPassword";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 export default function Password() {
   const [password, setPassword] = useState("");
   const { verifyPassword, isLoading, error, isSuccess } = useMemberPassword();
 
+  const [withdrawModalOpen, setWithdrawModalOpen] = useState(false);
+  const [withdrawCompleteModalOpen, setWithdrawCompleteModalOpen] = useState(false);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await verifyPassword(password);
+    const ok = await verifyPassword(password);
+    if (!ok) return;
+
+    if (next === "edit") {
+      router.push("/mypage/edit");
+    } else if (next === "withdraw") {
+      setWithdrawModalOpen(true);
+    }
+  };
+
+  const handleWithdraw = async () => {
+    try {
+      const token = localStorage.getItem("Authorization");
+      const res = await fetch("/api/members/mypage", {
+        method: "DELETE",
+        headers: { Authorization: token ? `Bearer ${token}` : "" },
+      });
+
+      if (res.ok) {
+        localStorage.removeItem("Authorization");
+        setWithdrawModalOpen(false);
+        setWithdrawCompleteModalOpen(true);
+      } else {
+        // 실패시 메시지 표시(선택)
+        console.error("탈퇴 실패");
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
+  <div className="max-w-md mx-auto mt-20 bg-white p-6 rounded-2xl shadow">
+    <h2 className="text-2xl font-bold mb-6 text-center">비밀번호 확인</h2> 
     <form onSubmit={handleSubmit} className="flex flex-col items-center gap-6">
       <div className="w-full">
         <label className="block text-sm font-medium mb-2">비밀번호</label>
@@ -38,5 +77,28 @@ export default function Password() {
 
       {isSuccess && <p className="text-green-600 text-sm">인증 성공!</p>}
     </form>
+
+   {/* 탈퇴 확인 모달 */}
+      <ConfirmModal
+        isOpen={withdrawModalOpen}
+        title="회원 탈퇴"
+        message="정말 탈퇴하시겠습니까?"
+        onConfirm={handleWithdraw}
+        onClose={() => router.push("/mypage")} 
+        confirmText="탈퇴"
+        cancelText="취소"
+      />
+
+      {/* 탈퇴 완료 모달 */}
+      <ConfirmModal
+        isOpen={withdrawCompleteModalOpen}
+        title="알림"
+        message="탈퇴가 완료되었습니다."
+        onConfirm={() => router.push("/")}
+        onClose={() => setWithdrawCompleteModalOpen(false)}
+        confirmText="확인"
+        cancelText=""
+      />
+    </div>  
   );
 }

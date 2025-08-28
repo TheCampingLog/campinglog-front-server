@@ -29,9 +29,12 @@ export default function AuthButtons() {
             }
           }
         })
-        .catch(() => setIsLoggedIn(false));
-    }
-  });
+      .catch(() => setIsLoggedIn(false));
+  } else {
+    setIsLoggedIn(false);         // ✅ 토큰이 아예 없을 때도 false로 세팅
+    setProfileImg("");            // ✅ 프로필 초기화
+  }
+}, []);
 
   if (isLoggedIn) {
     return (
