@@ -129,6 +129,15 @@ export default function BoardDetailPage() {
             <span>{new Date(board.createdAt).toLocaleString()}</span>
           </div>
         </div>
+        {/* 이미지가 있을 때만 보여주기 */}
+        {board.boardImage && (
+          <img
+            src={board.boardImage}
+            alt="게시글 이미지"
+            className="max-w-full max-h-96 rounded-lg mb-6 mx-auto"
+          />
+        )}
+
         <div
           className="prose max-w-none mt-6 mb-8"
           dangerouslySetInnerHTML={{
