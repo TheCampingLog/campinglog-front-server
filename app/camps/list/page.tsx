@@ -118,16 +118,18 @@ export default function CampListPage() {
             ) : (
               <>
                 <CampLatestList camps={campLatestList} />
-                <Pagination
-                  page={currentPage}
-                  totalPages={paginationData.totalPages}
-                  hasPrev={currentPage > 1}
-                  hasNext={paginationData.hasNext}
-                  goToPage={handlePageChange}
-                  prevPage={handlePrevPage}
-                  nextPage={handleNextPage}
-                  maxVisible={5}
-                />
+                {paginationData && (
+                  <Pagination
+                    page={currentPage}
+                    totalPages={paginationData.totalPages}
+                    hasPrev={currentPage > 1}
+                    hasNext={paginationData.hasNext}
+                    goToPage={handlePageChange}
+                    prevPage={handlePrevPage}
+                    nextPage={handleNextPage}
+                    maxVisible={5}
+                  />
+                )}
               </>
             )}
         </div>

@@ -14,6 +14,10 @@ export async function GET(
 ) {
     
     try {
+        const { searchParams } = new URL(request.url);
+        const pageNo = searchParams.get("pageNo") ?? "0";
+        const size = searchParams.get("size") ?? "4";
+
         const { mapX, mapY } = params;
 
         if (!mapX || !mapY) {
@@ -21,7 +25,7 @@ export async function GET(
         }
 
         // Fetch camping site details from the database or external API
-        const campDetail = await fetch(`${backendUrl}/api/camps/detail/${mapX}/${mapY}`);
+        const campDetail = await fetch(`${backendUrl}/api/camps/detail/${mapX}/${mapY}?pageNo=${pageNo}&size=${size}`);
 
         if (!campDetail.ok) {   
             return new Error(`Camping site not found, ${campDetail.status} ${campDetail.statusText}`);
