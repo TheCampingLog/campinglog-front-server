@@ -82,3 +82,12 @@ enum MemberGrade {
   RED,
   BLACK,
 }
+
+export interface ReqeustAddMember {
+  email: string;
+  password: string;
+  name: string;
+  nickname: string;
+  birthday: string;
+  phonenumber: string;
+}
