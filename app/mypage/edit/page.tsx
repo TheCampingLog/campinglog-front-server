@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import ConfirmModal from "@/components/common/ConfirmModal";
 
 export default function EditMypage() {
   const [email, setEmail] = useState("");       // 읽기 전용
@@ -10,6 +11,8 @@ export default function EditMypage() {
   const [phoneNumber, setPhoneNumber] = useState(""); // 수정 가능
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+    const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
 
   // ✅ 기존 회원정보 조회
@@ -19,14 +22,10 @@ export default function EditMypage() {
         const token = localStorage.getItem("Authorization");
         const res = await fetch("/api/members/mypage", {
           method: "GET",
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-          },
+          headers: { Authorization: token ? `Bearer ${token}` : "" },
         });
 
-        if (!res.ok) {
-          throw new Error("회원 정보를 불러오지 못했습니다.");
-        }
+        if (!res.ok) throw new Error("회원 정보를 불러오지 못했습니다.");
 
         const data = await res.json();
         setEmail(data.email ?? "");
@@ -34,11 +33,7 @@ export default function EditMypage() {
         setNickname(data.nickname ?? "");
         setPhoneNumber(data.phoneNumber ?? "");
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("알 수 없는 오류가 발생했습니다.");
-        }
+        setError(err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.");
       } finally {
         setLoading(false);
       }
@@ -58,25 +53,20 @@ export default function EditMypage() {
       const res = await fetch("/api/members/mypage", {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json; charset=UTF-8",
           Authorization: token ? `Bearer ${token}` : "",
         },
-        body: JSON.stringify({ nickname, phoneNumber }), // name, email 은 서버에서 관리
+        body: JSON.stringify({ nickname, phoneNumber }),
       });
 
       if (res.ok) {
-        alert("회원정보가 수정되었습니다.");
-        router.push("/mypage");
+        setModalOpen(true); // ✅ alert → 모달 열기
       } else {
         const data = await res.json();
         throw new Error(data.message || "회원정보 수정 실패");
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("회원정보 수정 중 오류가 발생했습니다.");
-      }
+      setError(err instanceof Error ? err.message : "회원정보 수정 중 오류가 발생했습니다.");
     }
   };
 
@@ -91,23 +81,13 @@ export default function EditMypage() {
         {/* 이메일 (읽기 전용) */}
         <div>
           <label className="block mb-1 font-medium">이메일</label>
-          <input
-            type="email"
-            value={email}
-            disabled
-            className="w-full border rounded-md px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed"
-          />
+          <input type="email" value={email} disabled className="w-full border rounded-md px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed" />
         </div>
 
         {/* 이름 (읽기 전용) */}
         <div>
           <label className="block mb-1 font-medium">이름</label>
-          <input
-            type="text"
-            value={name}
-            disabled
-            className="w-full border rounded-md px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed"
-          />
+          <input type="text" value={name} disabled className="w-full border rounded-md px-3 py-2 bg-gray-100 text-gray-600 cursor-not-allowed" />
         </div>
 
         {/* 닉네임 (수정 가능) */}
@@ -142,14 +122,24 @@ export default function EditMypage() {
           >
             취소
           </button>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-          >
+          <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
             저장
           </button>
         </div>
       </form>
+      {/* ✅ 공통 ConfirmModal */}
+      <ConfirmModal
+        isOpen={modalOpen}
+        title="알림"
+        message="회원정보가 수정되었습니다."
+        onConfirm={() => {
+          setModalOpen(false);
+          router.push("/mypage");
+        }}
+        onClose={() => setModalOpen(false)}
+        confirmText="확인"
+        cancelText="닫기"
+      />
     </div>
   );
 }
