@@ -28,12 +28,39 @@ export async function PUT(req: NextRequest) {
     },
     body: JSON.stringify(body),
   });
-
-  // 백엔드가 204 No Content 를 반환할 수도 있으니 대비
   if (res.status === 204) {
     return NextResponse.json({ success: true }, { status: 200 });
   }
 
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });
+}
+
+export async function DELETE(req: NextRequest) {
+  const token = req.headers.get("authorization");
+
+  const res = await fetch(`${BACKEND_URL}/api/members`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: token ?? "",
+    },
+    cache: "no-store",
+  });
+  
+  if (res.status === 204) {
+    return NextResponse.json({ success: true }, { status: 200 });
+  }
+
+  const contentType = res.headers.get("content-type") ?? "";
+  if (contentType.includes("application/json")) {
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } else {
+    const text = await res.text();
+    return new NextResponse(text, {
+      status: res.status,
+      headers: { "Content-Type": contentType || "text/plain; charset=UTF-8" },
+    });
+  }
 }
