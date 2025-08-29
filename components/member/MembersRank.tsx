@@ -8,11 +8,10 @@ function MembersRank() {
   const [rankings, setRankings] = useState<ResponseGetRanking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     async function fetchRankings() {
       try {
-        const response = await fetch("/api/members/ranking");
+        const response = await fetch(`/api/members/rank`);
         if (!response.ok) throw new Error("Failed to fetch");
 
         const data = await response.json();
@@ -45,7 +44,8 @@ function MembersRank() {
               </span>
               <span className="text-sm">{ranking.memberGrade}</span>
               <span className="font-medium text-gray-700 text-sm">
-                {ranking.nickName}
+                {ranking.nickname}
+                {ranking.memberGrade}                
               </span>
             </div>
           </div>
