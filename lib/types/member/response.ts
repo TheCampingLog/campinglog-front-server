@@ -1,5 +1,5 @@
 export interface ResponseGetRanking {
-  nickName: string;
+  nickname: string;
   memberGrade: MemberGrade;
 }
 
