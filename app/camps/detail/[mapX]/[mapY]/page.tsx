@@ -1,12 +1,14 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import useCampDetail from "@/lib/hooks/camps/useCampDetail";
 import useBoardReview from "@/lib/hooks/camps/useBoardReview";
 import useReviewList from "@/lib/hooks/camps/useReviewList"; // 리뷰 목록 훅 import
 import CampDetail from "@/components/camps/CampDetail";
 import BoardReview from "@/components/camps/BoardReview";
 import ReviewList from "@/components/camps/ReviewList";
+import AddReview from "@/components/camps/AddReview";
 
 interface Params {
     mapX: string;
@@ -21,8 +23,10 @@ export default function CampDetailPage() {
     const { campDetail, isLoading, error } = useCampDetail(mapX, mapY);
     const { boardReview, isLoading: reviewBoardLoading, error: reviewBoardError } = useBoardReview(mapX, mapY);
 
-    // 리뷰 목록 가져오기
-    const { reviewList, isLoading: reviewListLoading, error: reviewListError } = useReviewList(mapX, mapY);
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    // 리뷰 목록 가져오기 (refreshKey가 바뀌면 재조회)
+    const { reviewList, isLoading: reviewListLoading, error: reviewListError } = useReviewList(mapX, mapY, refreshKey);
 
     if (isLoading || reviewBoardLoading || reviewListLoading) {
         return (
@@ -63,6 +67,11 @@ export default function CampDetailPage() {
             <h1 className="text-2xl font-bold mt-3 mb-2">캠핑장 상세</h1>
             <CampDetail camp={campDetail} />
             <BoardReview camp={boardReview} />
+            <AddReview
+                mapX={mapX}
+                mapY={mapY}
+                onSuccess={() => setRefreshKey(prev => prev + 1)}
+            />
             <ReviewList reviewList={reviewList} mapX={mapX} mapY={mapY} />
         </div>
     );

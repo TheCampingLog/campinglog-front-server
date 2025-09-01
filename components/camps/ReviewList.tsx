@@ -37,12 +37,15 @@ function ReviewList({ reviewList, mapX, mapY }: ReviewListProps) {
     <div>
       {reviews.map((review) => (
         <div key={review.createAt + review.email} className="flex items-center gap-6 py-6 border-b">
-          <Image
-            src={review.reviewImage}
+          <img
+            src={`http://localhost:8001/images/review/${review.reviewImage}`}
             alt="리뷰 이미지"
             width={120}
             height={120}
             className="rounded-xl object-cover"
+            onError={e => {
+              e.currentTarget.src = "/image/camp-default.png";
+            }}
           />
           <div className="flex-1">
             <div className="flex flex-col gap-5">
