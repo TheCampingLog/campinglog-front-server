@@ -1,31 +1,19 @@
-import { ResponseGetReviewList } from "@/lib/types/camps/response";
 import { useEffect, useState } from "react";
 
+export default function useReviewList(mapX: string, mapY: string, refreshKey?: number) {
+  const [reviewList, setReviewList] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-function useBoardReview(mapX: string, mapY: string) {
-    const [reviewList, setBoardReview] = useState<ResponseGetReviewList | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    setIsLoading(true);
+    setError("");
+    fetch(`/api/camps/reviews/${mapX}/${mapY}`)
+      .then(res => res.json())
+      .then(data => setReviewList(data))
+      .catch(err => setError("리뷰 목록을 불러오지 못했습니다."))
+      .finally(() => setIsLoading(false));
+  }, [mapX, mapY, refreshKey]);
 
-    useEffect(() => {
-        const fetchBoardReview = async () => {
-            try {
-                setIsLoading(true);
-                const response = await fetch(`/api/camps/reviews/${mapX}/${mapY}`);
-                if (!response.ok) throw new Error(`리뷰 로드 실패: ${response.statusText}`);
-                const data = await response.json();
-                setBoardReview(data);
-            } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-                setError(errorMessage);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        if (mapX && mapY) fetchBoardReview();
-    }, [mapX, mapY]);
-
-    return { reviewList, isLoading, error };
+  return { reviewList, isLoading, error };
 }
-export default useBoardReview;
