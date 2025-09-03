@@ -20,13 +20,12 @@ export interface ResponseGetMemberProfileImage {
   profileImage: string;
 }
 
-// 활동 요약 (GET /api/members/mypage/activity)
+// 활동 요약 (GET /api/members/mypage/summary)
 export interface ResponseGetMemberActivitySummary {
-  postCount: number;
+  boardCount: number;
   commentCount: number;
   reviewCount: number;
   likeCount: number;
-  joinDate: string;
 }
 
 export interface ResponseGetMemberBoards {
