@@ -50,17 +50,17 @@ export default function Password() {
   };
 
   return (
-  <div className="max-w-md mx-auto mt-20 bg-white p-6 rounded-2xl shadow">
+  <div className="max-w-md mx-auto mt-20 bg-white border border-gray-300 rounded-3xl shadow-sm p-10">
     <h2 className="text-2xl font-bold mb-6 text-center">비밀번호 확인</h2> 
     <form onSubmit={handleSubmit} className="flex flex-col items-center gap-6">
       <div className="w-full">
-        <label className="block text-sm font-medium mb-2">비밀번호</label>
         <input
           type="password"
           className="w-full border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          placeholder="비밀번호를 입력하세요"
         />
       </div>
 
