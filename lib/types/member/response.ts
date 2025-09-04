@@ -1,6 +1,8 @@
 export interface ResponseGetRanking {
   nickname: string;
   memberGrade: MemberGrade;
+  profileImage: string | null;
+  totalLikes: number;
 }
 
 // 회원 기본 정보 (GET /api/members/mypage)
