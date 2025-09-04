@@ -31,7 +31,7 @@ export default function BoardCategoryPage() {
     );
 
   const { paginatedData: searchData, isLoading: isSearchLoading } =
-    useBoardSearch(submittedSearchTerm, currentPage, PAGE_SIZE);
+    useBoardSearch(submittedSearchTerm, categoryName, currentPage, PAGE_SIZE);
 
   const isSearching = !!submittedSearchTerm;
   const isLoading = isSearching ? isSearchLoading : isCategoryLoading;
@@ -70,7 +70,7 @@ export default function BoardCategoryPage() {
             ? `"${submittedSearchTerm}" 검색 결과`
             : `${categoryName}`}
         </h1>
-        <Link href="/board/write" passHref>
+        <Link href="/board/new" passHref>
           <Button variant={"camping-solid"}>글쓰기</Button>
         </Link>
       </div>
