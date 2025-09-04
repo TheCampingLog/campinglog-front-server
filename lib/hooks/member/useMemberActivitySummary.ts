@@ -5,7 +5,7 @@ import { ResponseGetMemberActivitySummary } from "@/lib/types/member/response";
 
 function useMemberActivitySummary() {
   const { data, error, mutate } = useSWR<ResponseGetMemberActivitySummary>(
-    `${backendUrl}/api/members/mypage/activity`,
+    `${backendUrl}/api/members/mypage/summary`,
     fetcher
   );
 

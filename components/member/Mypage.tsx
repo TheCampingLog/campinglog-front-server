@@ -168,25 +168,56 @@ function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
               <h4 className="font-bold">내 활동 요약</h4>
               {member?.memberGrade && (
                 <img
-                  src={`${process.env.NEXT_PUBLIC_IMAGE_ROOT_URL}/images/member/${member.memberGrade}.png`}
+                  src={`/image/${member.memberGrade}.png`}
                   alt={`${member.memberGrade} 뱃지`}
                   className="w-24 h-24"
                 />
               )}
             </div>
-            <p>작성한 게시글 : {activitySummary?.postCount ?? 0}개</p>
-            <p>작성한 댓글 : {activitySummary?.commentCount ?? 0}개</p>
-            <p>작성한 리뷰 : {activitySummary?.reviewCount ?? 0}개</p>
-            <p>받은 좋아요 : {activitySummary?.likeCount ?? 0}개</p>
-            <p>가입 일자 : {member?.joinDate ?? "-"}</p>
+          <div className="space-y-1">
+            <div className="flex justify-between">
+              <span>작성한 게시글</span>
+              <span>{activitySummary?.boardCount ?? 0}개</span>
+            </div>
+            <div className="flex justify-between">
+              <span>작성한 댓글</span>
+              <span>{activitySummary?.commentCount ?? 0}개</span>
+            </div>
+            <div className="flex justify-between">
+              <span>작성한 리뷰</span>
+              <span>{activitySummary?.reviewCount ?? 0}개</span>
+            </div>
+            <div className="flex justify-between">
+              <span>받은 좋아요</span>
+              <span>{activitySummary?.likeCount ?? 0}개</span>
+            </div>
+            <div className="flex justify-between">
+              <span>가입 일자</span>
+              <span>{member?.joinDate ?? "-"}</span>
+            </div>
+          </div>
           </div>
 
           <div className="bg-[#F0F9F9] rounded-lg p-4 shadow-sm">
             <h4 className="font-bold mb-3">내 계정 정보</h4>
-            <p>이메일: {member?.email}</p>
-            <p>닉네임: {member?.nickname}</p>
-            <p>이름: {member?.name}</p>
-            <p>전화번호: {member?.phoneNumber}</p>
+            <div className="space-y-1">
+              <div className="flex justify-between">
+                <span>이메일</span>
+                <span>{member?.email}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>닉네임</span>
+                <span>{member?.nickname}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>이름</span>
+                <span>{member?.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>전화번호</span>
+                <span>{member?.phoneNumber}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>

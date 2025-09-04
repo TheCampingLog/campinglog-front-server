@@ -52,7 +52,7 @@ export default function MemberMypage() {
 
         // 활동 요약
         const summaryRes = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_ROOT_URL + "/api/members/mypage",
+          process.env.NEXT_PUBLIC_BACKEND_ROOT_URL + "/api/members/mypage/summary",
           {
             headers: {
               "Content-Type": "application/json",
