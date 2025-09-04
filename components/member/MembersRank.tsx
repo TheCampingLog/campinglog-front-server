@@ -3,11 +3,13 @@
 
 import { useState, useEffect } from "react";
 import { ResponseGetRanking } from "@/lib/types/member/response";
+import Image from "next/image";
 
 function MembersRank() {
   const [rankings, setRankings] = useState<ResponseGetRanking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const imageRoot = process.env.NEXT_PUBLIC_IMAGE_ROOT_URL || "";
   useEffect(() => {
     async function fetchRankings() {
       try {
@@ -42,11 +44,31 @@ function MembersRank() {
               <span className="text-sm font-medium text-gray-600">
                 {index + 1}등
               </span>
-              <span className="text-sm">{ranking.memberGrade}</span>
+              {/* 프로필 이미지 */}
+              <Image
+                src={
+                  ranking.profileImage
+                    ? `${imageRoot}${ranking.profileImage}`
+                    : "/image/default.png"
+                }
+                alt={`${ranking.nickname} 프로필`}
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+
+              {/* 닉네임 */}
               <span className="font-medium text-gray-700 text-sm">
                 {ranking.nickname}
-                {ranking.memberGrade}                
               </span>
+
+              {/* ✅ 뱃지 이미지 */}
+              <Image
+                src={`/image/${ranking.memberGrade}.png`}
+                alt={`${ranking.memberGrade} 배지`}
+                width={24}
+                height={24}
+              />
             </div>
           </div>
         ))}
