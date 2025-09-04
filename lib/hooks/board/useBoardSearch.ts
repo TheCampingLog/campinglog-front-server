@@ -4,10 +4,11 @@ import { ResponseGetBoardByKeywordWrapper } from "@/lib/types/board/response";
 
 export default function useBoardSearch(
   keyword: string,
+  category: string,
   page: number,
   size: number
 ) {
-  const url = `/api/boards/search?keyword=${keyword}&page=${page}&size=${size}`;
+  const url = `/api/boards/search?keyword=${keyword}&category=${category}&page=${page}&size=${size}`;
 
   const { data, error, isLoading } = useSWR<ResponseGetBoardByKeywordWrapper>(
     keyword ? url : null,
