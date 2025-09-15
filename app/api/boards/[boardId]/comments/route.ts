@@ -4,13 +4,14 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_ROOT_URL;
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { boardId: string } }
+  { params }: { params: Promise<{ boardId: string }> }
 ) {
   const sp = req.nextUrl.searchParams;
   const page = sp.get("page") ?? "1";
   const size = sp.get("size") ?? "10";
+  const { boardId } = await params;
 
-  const url = new URL(`${BACKEND_URL}/api/boards/${params.boardId}/comments`);
+  const url = new URL(`${BACKEND_URL}/api/boards/${boardId}/comments`);
   url.searchParams.set("page", page);
   url.searchParams.set("size", size);
 

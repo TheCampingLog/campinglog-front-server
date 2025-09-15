@@ -1,33 +1,29 @@
-"use client";
-
 import Link from "next/link";
-import useBoardReviewRankList from "@/lib/hooks/camps/useBoardReviewRankList";
 import Image from "next/image";
 import campDefault from "@/public/image/camp-default.png";
 import { Star } from "lucide-react";
+import { ResponseGetBoardReviewRank } from "@/lib/types/camps/response";
+import { backendUrl } from "@/lib/config";
 
-function BoardReviewRankList() {
-  // useBoards 훅 사용
-  const { isLoading, boardReviewRanks, error } = useBoardReviewRankList();
-
-  console.log("캠핑 revalidate");
-  // 로딩 상태 처리
-  if (isLoading) {
-    return <div className="text-center py-8">Loading...</div>;
+async function fetchBoardReviewRankList(): Promise<
+  ResponseGetBoardReviewRank[]
+> {
+  const res = await fetch(`${backendUrl}/api/camps/reviews/board/rank`, {
+    next: { revalidate: 604800 },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch BoardReviewRankList");
   }
+  const data = res.json();
+  return data;
+}
 
-  // 에러 상태 처리
-  if (error) {
-    return (
-      <div className="text-center py-8 text-red-500">
-        Error: {error.message}
-      </div>
-    );
-  }
-
-  // 데이터가 없을 때 처리
-  if (!boardReviewRanks || boardReviewRanks.length === 0) {
-    return <div className="text-center py-8">게시글이 없습니다.</div>;
+export default async function BoardReviewRankListServer() {
+  let boardReviewRanks: ResponseGetBoardReviewRank[] = [];
+  try {
+    boardReviewRanks = await fetchBoardReviewRankList();
+  } catch (error) {
+    return <div>Error loading BoardReviewRankList</div>;
   }
 
   return (
@@ -37,7 +33,10 @@ function BoardReviewRankList() {
       </h3>
       <div className="grid grid-cols-3 gap-4">
         {boardReviewRanks.map((board, index) => (
-          <Link key={index} href={`/camps/detail/${board.mapX}/${board.mapY}`}>
+          <Link
+            key={index}
+            href={`${backendUrl}/camps/detail/${board.mapX}/${board.mapY}`}
+          >
             <div
               key={index}
               className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
@@ -73,5 +72,3 @@ function BoardReviewRankList() {
     </div>
   );
 }
-
-export default BoardReviewRankList;

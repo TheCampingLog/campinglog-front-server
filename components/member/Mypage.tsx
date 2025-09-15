@@ -174,28 +174,28 @@ function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
                 />
               )}
             </div>
-          <div className="space-y-1">
-            <div className="flex justify-between">
-              <span>작성한 게시글</span>
-              <span>{activitySummary?.boardCount ?? 0}개</span>
+            <div className="space-y-1">
+              <div className="flex justify-between">
+                <span>작성한 게시글</span>
+                <span>{activitySummary?.boardCount ?? 0}개</span>
+              </div>
+              <div className="flex justify-between">
+                <span>작성한 댓글</span>
+                <span>{activitySummary?.commentCount ?? 0}개</span>
+              </div>
+              <div className="flex justify-between">
+                <span>작성한 리뷰</span>
+                <span>{activitySummary?.reviewCount ?? 0}개</span>
+              </div>
+              <div className="flex justify-between">
+                <span>받은 좋아요</span>
+                <span>{activitySummary?.likeCount ?? 0}개</span>
+              </div>
+              <div className="flex justify-between">
+                <span>가입 일자</span>
+                <span>{member?.joinDate ?? "-"}</span>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span>작성한 댓글</span>
-              <span>{activitySummary?.commentCount ?? 0}개</span>
-            </div>
-            <div className="flex justify-between">
-              <span>작성한 리뷰</span>
-              <span>{activitySummary?.reviewCount ?? 0}개</span>
-            </div>
-            <div className="flex justify-between">
-              <span>받은 좋아요</span>
-              <span>{activitySummary?.likeCount ?? 0}개</span>
-            </div>
-            <div className="flex justify-between">
-              <span>가입 일자</span>
-              <span>{member?.joinDate ?? "-"}</span>
-            </div>
-          </div>
           </div>
 
           <div className="bg-[#F0F9F9] rounded-lg p-4 shadow-sm">

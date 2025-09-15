@@ -4,10 +4,11 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_ROOT_URL;
 
 export async function PUT(
   request: Request,
-  { params }: { params: { boardId: string; commentId: string } }
+  { params }: { params: Promise<{ boardId: string; commentId: string }> }
 ) {
+  const { boardId, commentId } = await params;
   const response = await fetch(
-    `${BACKEND_URL}/api/boards/${params.boardId}/comments/${params.commentId}`,
+    `${BACKEND_URL}/api/boards/${boardId}/comments/${commentId}`,
     {
       method: "PUT",
       body: request.body,
@@ -20,10 +21,11 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { boardId: string; commentId: string } }
+  { params }: { params: Promise<{ boardId: string; commentId: string }> }
 ) {
+  const { boardId, commentId } = await params;
   const response = await fetch(
-    `${BACKEND_URL}/api/boards/${params.boardId}/comments/${params.commentId}`,
+    `${BACKEND_URL}/api/boards/${boardId}/comments/${commentId}`,
     {
       method: "DELETE",
     }

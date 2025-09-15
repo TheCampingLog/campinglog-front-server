@@ -6,14 +6,15 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_ROOT_URL;
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { boardId: string } } // 1. params에서 commentId 제거
+  { params }: { params: Promise<{ boardId: string }> } // 1. params에서 commentId 제거
 ) {
   // 2. 프론트엔드에서 보낸 요청 헤더에서 인증 토큰을 가져옵니다.
   const token = request.headers.get("Authorization");
+  const { boardId } = await params;
 
   const response = await fetch(
     // 3. 올바른 게시글 좋아요 API 주소로 수정합니다.
-    `${BACKEND_URL}/api/boards/${params.boardId}/likes`,
+    `${BACKEND_URL}/api/boards/${boardId}/likes`,
     {
       method: "POST",
       headers: {
@@ -30,14 +31,15 @@ export async function POST(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { boardId: string } } // 1. params에서 commentId 제거
+  { params }: { params: Promise<{ boardId: string }> } // 1. params에서 commentId 제거
 ) {
   // 2. 프론트엔드에서 보낸 요청 헤더에서 인증 토큰을 가져옵니다.
   const token = request.headers.get("Authorization");
+  const { boardId } = await params;
 
   const response = await fetch(
     // 3. 올바른 게시글 좋아요 API 주소로 수정합니다.
-    `${BACKEND_URL}/api/boards/${params.boardId}/likes`,
+    `${BACKEND_URL}/api/boards/${boardId}/likes`,
     {
       method: "DELETE",
       headers: {
@@ -62,18 +64,16 @@ export async function DELETE(
 // 참고: 게시글 좋아요 목록을 가져오는 GET 요청이 필요하다면 아래와 같이 구현할 수 있습니다.
 export async function GET(
   request: NextRequest,
-  { params }: { params: { boardId: string } }
+  { params }: { params: Promise<{ boardId: string }> }
 ) {
   const token = request.headers.get("Authorization");
+  const { boardId } = await params;
 
-  const response = await fetch(
-    `${BACKEND_URL}/api/boards/${params.boardId}/likes`,
-    {
-      headers: {
-        Authorization: token ?? "",
-      },
-    }
-  );
+  const response = await fetch(`${BACKEND_URL}/api/boards/${boardId}/likes`, {
+    headers: {
+      Authorization: token ?? "",
+    },
+  });
   const data = await response.json();
   return NextResponse.json(data, { status: response.status });
 }
