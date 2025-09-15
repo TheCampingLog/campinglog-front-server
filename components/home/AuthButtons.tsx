@@ -3,42 +3,69 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import defaultImg from "@/public/image/default.png";
 import Image from "next/image";
+import tokenManager from "@/lib/utils/customFetch"; // 토큰 관리 모듈 경로 맞게 수정
+import { useRouter } from "next/navigation";
 
 export default function AuthButtons() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profileImg, setProfileImg] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
-    console.log("jwt 검증 실행");
     const token = localStorage.getItem("Authorization");
-    if (token) {
-      // JWT 검증 및 사용자 정보 가져오기
-      fetch(
-        process.env.NEXT_PUBLIC_BACKEND_ROOT_URL +
-          "/api/members/mypage/profile-image",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-        .then((res) => (res.ok ? res.json() : null))
-        .then((data) => {
-          if (data) {
-            setIsLoggedIn(true);
-            if (data.profileImage) {
-              setProfileImg(
-                process.env.NEXT_PUBLIC_IMAGE_ROOT_URL + data.profileImage
-              );
-            }
-          }
-        })
-        .catch(() => setIsLoggedIn(false));
+    if (!token) {
+      // 토큰 없으면 프로필 API 호출 안 함, 상태도 초기화
+      setIsLoggedIn(false);
+      setProfileImg("");
+      return;
     }
-  });
+
+    const fetchProfileImage = async () => {
+      try {
+        const response = await tokenManager.fetchWithAuth(
+          `${process.env.NEXT_PUBLIC_BACKEND_ROOT_URL}/api/members/mypage/profile-image`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "same-origin",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("프로필 이미지 불러오기 실패");
+        }
+
+        const data = await response.json();
+        setIsLoggedIn(true);
+        if (data.profileImage) {
+          setProfileImg(
+            process.env.NEXT_PUBLIC_IMAGE_ROOT_URL + data.profileImage
+          );
+        } else {
+          setProfileImg("");
+        }
+      } catch (error) {
+        setIsLoggedIn(false);
+        setProfileImg("");
+      }
+    };
+
+    fetchProfileImage();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("Authorization");
+    setIsLoggedIn(false);
+    setProfileImg("");
+    router.push("/");
+  };
 
   if (isLoggedIn) {
     return (
       <div className="flex items-center gap-3">
-        <Link href="/mypage">
+        <Link href="/mypage" prefetch={false}>
           <Image
             src={profileImg || defaultImg}
             alt="프로필"
@@ -47,13 +74,7 @@ export default function AuthButtons() {
             className="h-8 w-8 rounded-full"
           />
         </Link>
-        <button
-          onClick={() => {
-            localStorage.removeItem("Authorization");
-            window.location.reload();
-          }}
-          className="px-3 py-1 border rounded"
-        >
+        <button onClick={handleLogout} className="px-3 py-1 border rounded">
           로그아웃
         </button>
       </div>
@@ -70,6 +91,7 @@ export default function AuthButtons() {
       <Link
         href="/login"
         className="px-4 py-2 border border-campinggreen bg-campinggreen text-white rounded-md hover:border-campingorange hover:bg-campingorange transition-colors duration-200"
+        prefetch={false}
       >
         로그인
       </Link>

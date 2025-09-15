@@ -18,27 +18,27 @@ export default function Header() {
         </Link>
         {/* 커뮤니티 드롭다운 메뉴 */}
         <div className="relative group">
-          {/* 메인 메뉴 링크 */}
           <Link
             href="/boards/캠핑장"
             className="px-4 py-2 text-gray-600 hover:text-campinggreen font-medium transition-colors duration-200"
           >
             커뮤니티
           </Link>
-          {/* 마우스 올리면 나타날 하위 메뉴 */}
-          <div className="absolute left-1/2 -translate-x-1/2 mt-2 w-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto">
-            <div className="bg-white rounded-md shadow-lg p-4">
-              <div className="flex items-center space-x-6">
-                {communityCategories.map((category) => (
-                  <Link
-                    key={category.name}
-                    href={category.href}
-                    className="block whitespace-nowrap text-sm text-gray-700 hover:text-campingorange hover:font-semibold"
-                  >
-                    {category.name}
-                  </Link>
-                ))}
-              </div>
+
+          <div className="absolute left-1/2 -translate-x-1/2 top-full w-auto opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto transform translate-y-2 group-hover:translate-y-0">
+            {/* 투명한 브릿지 */}
+            <div className="h-2 w-full"></div>
+
+            <div className="bg-white rounded-lg shadow-xl border border-gray-100 py-2 min-w-[160px]">
+              {communityCategories.map((category, index) => (
+                <Link
+                  key={category.name}
+                  href={category.href}
+                  className="block px-4 py-3 text-sm text-gray-700 hover:bg-campingorange hover:text-white transition-colors duration-200 first:rounded-t-lg last:rounded-b-lg"
+                >
+                  {category.name}
+                </Link>
+              ))}
             </div>
           </div>
         </div>

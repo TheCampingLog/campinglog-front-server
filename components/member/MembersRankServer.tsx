@@ -1,36 +1,25 @@
-// components/RankingList.tsx
-"use client";
-
-import { useState, useEffect } from "react";
 import { ResponseGetRanking } from "@/lib/types/member/response";
 import Image from "next/image";
-import { backendUrl } from "@/lib/config";
+import { backendUrl, imageUrl } from "@/lib/config";
 
-function MembersRank() {
-  const [rankings, setRankings] = useState<ResponseGetRanking[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const imageRoot = process.env.NEXT_PUBLIC_IMAGE_ROOT_URL || "";
-  useEffect(() => {
-    async function fetchRankings() {
-      try {
-        const response = await fetch(`${backendUrl}/api/members/rank`);
-        if (!response.ok) throw new Error("Failed to fetch");
+async function fetchRankings(): Promise<ResponseGetRanking[]> {
+  const res = await fetch(`${backendUrl}/api/members/rank`, {
+    next: { revalidate: 604800 },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch Rankings");
+  }
+  const data = await res.json();
+  return data;
+}
 
-        const data = await response.json();
-        setRankings(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchRankings();
-  }, []);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+export default async function MembersRankServer() {
+  let rankings: ResponseGetRanking[] = [];
+  try {
+    rankings = await fetchRankings();
+  } catch (error) {
+    return <div>Error loading Rankings</div>;
+  }
 
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm">
@@ -56,7 +45,7 @@ function MembersRank() {
               <Image
                 src={
                   ranking.profileImage
-                    ? `${imageRoot}/images/member/profile/${ranking.profileImage}`
+                    ? `${imageUrl}/images/member/profile/${ranking.profileImage}`
                     : "/image/default.png"
                 }
                 alt={`${ranking.nickname} 프로필`}
@@ -76,5 +65,3 @@ function MembersRank() {
     </div>
   );
 }
-
-export default MembersRank;

@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       new URL(imageUrl + "/images/**"),
       new URL("https://gocamping.or.kr/upload/**"),
+      new URL("http://localhost:8888/**"),
     ],
   },
 };

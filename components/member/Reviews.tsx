@@ -99,7 +99,7 @@ export default function Reviews() {
   const handleEdit = (review: Review) => {
     setEditReview(review);
     setEditContent(review.reviewContent); // 기존 내용
-    setEditScore(review.reviewScore);     // 기존 별점
+    setEditScore(review.reviewScore); // 기존 별점
     setEditImage(review.reviewImage || ""); // 기존 이미지
     setImageFile(null);
     setModalError("");
@@ -166,17 +166,14 @@ export default function Reviews() {
     };
 
     try {
-      const res = await fetch(
-        `${backendUrl}/api/camps/members/reviews`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(body),
-        }
-      );
+      const res = await fetch(`${backendUrl}/api/camps/members/reviews`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
       if (!res.ok) {
         const errMsg = await res.text();
         throw new Error("리뷰 수정 실패\n" + errMsg);
@@ -192,9 +189,12 @@ export default function Reviews() {
   };
 
   if (isLoading) return <p className="text-center py-6">불러오는 중...</p>;
-  if (error) return <p className="text-center py-6 text-red-500">{error.message}</p>;
+  if (error)
+    return <p className="text-center py-6 text-red-500">{error.message}</p>;
   if (reviews.length === 0)
-    return <p className="text-center py-6 text-gray-500">작성한 리뷰가 없습니다.</p>;
+    return (
+      <p className="text-center py-6 text-gray-500">작성한 리뷰가 없습니다.</p>
+    );
 
   return (
     <div className="flex flex-col min-h-full">
@@ -223,8 +223,12 @@ export default function Reviews() {
                 {/* 내용 */}
                 <div className="flex-1">
                   <h3 className="font-bold text-base">{r.facltNm}</h3>
-                  <p className="text-sm text-gray-600 line-clamp-2">{r.reviewContent}</p>
-                  <p className="text-xs text-gray-500 mt-1">⭐ {r.reviewScore} / 5</p>
+                  <p className="text-sm text-gray-600 line-clamp-2">
+                    {r.reviewContent}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    ⭐ {r.reviewScore} / 5
+                  </p>
                   <p className="text-xs text-gray-400 mt-1">
                     {new Date(r.createAt).toLocaleString()}
                   </p>
@@ -235,6 +239,7 @@ export default function Reviews() {
                 <Button
                   variant="camping-outline"
                   size="sm"
+                  // @ts-ignore
                   onClick={() => handleEdit(r)}
                 >
                   수정
@@ -242,6 +247,7 @@ export default function Reviews() {
                 <Button
                   variant="destructive"
                   size="sm"
+                  // @ts-ignore
                   onClick={() => handleDeleteClick(r.id)}
                 >
                   삭제
@@ -310,10 +316,16 @@ export default function Reviews() {
               )}
             </div>
             <div className="flex justify-end gap-2 mt-2">
-              <Button variant="outline" size="sm" type="button" onClick={handleCloseModal}>
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                onClick={handleCloseModal}
+              >
                 취소
               </Button>
               <Button
+                // @ts-ignore
                 variant="camping"
                 size="sm"
                 type="submit"
@@ -322,7 +334,11 @@ export default function Reviews() {
                 {loading ? "수정 중..." : "수정"}
               </Button>
             </div>
-            {modalError && <div className="text-red-500 whitespace-pre-line">{modalError}</div>}
+            {modalError && (
+              <div className="text-red-500 whitespace-pre-line">
+                {modalError}
+              </div>
+            )}
           </form>
         </div>
       )}

@@ -1,27 +1,25 @@
-"use client";
-
-import useBoardRankList from "@/lib/hooks/board/useBoardRankList";
 import Image from "next/image";
 import Link from "next/link";
-import { imageUrl } from "@/lib/config";
+import { ResponseGetBoardRank } from "@/lib/types/board/response";
+import { backendUrl, imageUrl } from "@/lib/config";
 
-function BoardsRank() {
-  const { isLoading, boardsRank, error } = useBoardRankList();
-
-  if (isLoading) {
-    return <div className="text-center py-8">Loading...</div>;
+async function fetchBoardsRank(): Promise<ResponseGetBoardRank[]> {
+  const res = await fetch(`${backendUrl}/api/boards/rank`, {
+    next: { revalidate: 604800 },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch BoardsRank");
   }
+  const data = await res.json();
+  return data;
+}
 
-  if (error) {
-    return (
-      <div className="text-center py-8 text-red-500">
-        Error: {error.message}
-      </div>
-    );
-  }
-
-  if (!boardsRank || boardsRank.length === 0) {
-    return <div className="text-center py-8">게시글이 없습니다.</div>;
+export default async function BoardsRankServer() {
+  let boardsRank: ResponseGetBoardRank[] = [];
+  try {
+    boardsRank = await fetchBoardsRank();
+  } catch (error) {
+    return <div>Error loading BoardsRank</div>;
   }
 
   const mainBoard = boardsRank[0];
@@ -89,5 +87,3 @@ function BoardsRank() {
     </div>
   );
 }
-
-export default BoardsRank;

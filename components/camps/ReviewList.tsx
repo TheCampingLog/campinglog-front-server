@@ -3,7 +3,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import StarRating from "./StarRating";
-import { ResponseGetCampWrapper, ResponseGetReviewList } from "@/lib/types/camps/response";
+import {
+  ResponseGetCampWrapper,
+  ResponseGetReviewList,
+} from "@/lib/types/camps/response";
 
 interface ReviewListProps {
   reviewList: ResponseGetCampWrapper<ResponseGetReviewList> | null;
@@ -22,34 +25,37 @@ function ReviewList({ reviewList, mapX, mapY }: ReviewListProps) {
   }
 
   const handleShowMore = async () => {
-  const nextPage = page + 1;
-  const url = `/api/camps/reviews/${mapX}/${mapY}?pageNo=${nextPage}&size=${PAGE_SIZE}`;
-  console.log("fetch URL:", url);
-  const res = await fetch(url);
-  const data = await res.json();
-  console.log("받아온 리뷰:", data.items);
-  setReviews((prev) => [...prev, ...(data.items ?? [])]);
-  setPage(data.page);
-  setHasNext(data.hasNext);
-};
+    const nextPage = page + 1;
+    const url = `/api/camps/reviews/${mapX}/${mapY}?pageNo=${nextPage}&size=${PAGE_SIZE}`;
+    console.log("fetch URL:", url);
+    const res = await fetch(url);
+    const data = await res.json();
+    console.log("받아온 리뷰:", data.items);
+    setReviews((prev) => [...prev, ...(data.items ?? [])]);
+    setPage(data.page);
+    setHasNext(data.hasNext);
+  };
 
   return (
     <div>
       {reviews.map((review) => (
-        <div key={review.createAt + review.email} className="flex items-center gap-6 py-6 border-b">
+        <div
+          key={review.createAt + review.email}
+          className="flex items-center gap-6 py-6 border-b"
+        >
           <img
             src={`http://localhost:8001/images/review/${review.reviewImage}`}
             alt="리뷰 이미지"
             width={120}
             height={120}
             className="rounded-xl object-cover"
-            onError={e => {
+            onError={(e) => {
               e.currentTarget.src = "/image/camp-default.png";
             }}
           />
           <div className="flex-1">
             <div className="flex flex-col gap-5">
-              <StarRating reviewAverage={review.reviewScore} className="w-5 h-5 gap-1" />
+              <StarRating reviewAverage={review.reviewScore} />
               <div className="flex justify-between">
                 <div className="mb-2 font-medium">{review.reviewContent}</div>
                 <div className="flex items-center gap-2 text-[#4A6920] mb-1">

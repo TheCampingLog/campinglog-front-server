@@ -4,9 +4,9 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_ROOT_URL;
 
 export async function GET(
   request: Request,
-  { params }: { params: { boardId: string } }
+  { params }: { params: Promise<{ boardId: string }> }
 ) {
-  const { boardId } = params;
+  const { boardId } = await params;
   const response = await fetch(`${BACKEND_URL}/api/boards/${boardId}`);
   const data = await response.json();
 
@@ -15,9 +15,9 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { boardId: string } }
+  { params }: { params: Promise<{ boardId: string }> }
 ) {
-  const { boardId } = params;
+  const { boardId } = await params;
   const response = await fetch(`${BACKEND_URL}/api/boards/${boardId}`, {
     method: "PUT",
     body: request.body,
@@ -29,9 +29,9 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { boardId: string } }
+  { params }: { params: Promise<{ boardId: string }> }
 ) {
-  const { boardId } = params;
+  const { boardId } = await params;
   const response = await fetch(`${BACKEND_URL}/api/boards/${boardId}`, {
     method: "DELETE",
   });
