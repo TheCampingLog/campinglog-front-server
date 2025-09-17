@@ -10,6 +10,8 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { backendUrl } from "@/lib/config";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { setCredentials } from "@/lib/redux/slices/authSlice";
 
 // 타입 정의
 interface LoginFormData {
@@ -33,6 +35,7 @@ interface KakaoLoginResponse {
 }
 
 export default function Page() {
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
@@ -105,6 +108,7 @@ export default function Page() {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include", // refreshToken
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
@@ -143,31 +147,23 @@ export default function Page() {
       if (token) {
         const jwt = token.startsWith("Bearer ") ? token.slice(7) : token;
         localStorage.setItem("Authorization", jwt); // 또는 sessionStorage
+        dispatch(setCredentials({ accessToken: jwt, memberId: null })); //Redux 상태 업데이트
         console.log("로그인 성공!");
         alert("로그인 성공!");
         window.location.href = "/";
       } else {
         // JSON에서 토큰 찾기
-        try {
-          const data = await response.json();
-          if (data.accessToken || data.token) {
-            localStorage.setItem(
-              "Authorization",
-              data.accessToken || data.token
-            );
-            console.log("로그인 성공:", data);
-            alert("로그인 성공!");
-            window.location.href = "/";
-          } else {
-            setErrors({
-              general: "토큰을 받을 수 없습니다.",
-            });
-          }
-        } catch (e) {
-          console.error("응답 파싱 오류:", e);
-          setErrors({
-            general: "응답 처리 중 오류가 발생했습니다.",
-          });
+        const data = await response.json().catch(() => null);
+        if (data?.accessToken || data?.token) {
+          const jwt = data.accessToken || data.token;
+
+          dispatch(setCredentials({ accessToken: jwt, memberId: null }));
+
+          console.log("로그인 성공(JSON)!");
+          alert("로그인 성공!");
+          window.location.href = "/";
+        } else {
+          setErrors({ general: "토큰을 받을 수 없습니다." });
         }
       }
     } catch (error) {

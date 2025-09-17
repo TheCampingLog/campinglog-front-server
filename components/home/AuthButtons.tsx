@@ -1,86 +1,64 @@
 "use client";
+
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import defaultImg from "@/public/image/default.png";
 import Image from "next/image";
-import tokenManager from "@/lib/utils/customFetch"; // 토큰 관리 모듈 경로 맞게 수정
 import { useRouter } from "next/navigation";
+import { useGetMeQuery } from "@/lib/redux/services/memberApi";
+import { store } from "@/lib/redux/store";
+import { clearCredentials } from "@/lib/redux/slices/authSlice";
+import { api } from "@/lib/redux/services/api";
+import defaultImg from "@/public/image/default.png";
 
 export default function AuthButtons() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [profileImg, setProfileImg] = useState("");
   const router = useRouter();
-
-  useEffect(() => {
-    const token = localStorage.getItem("Authorization");
-    if (!token) {
-      // 토큰 없으면 프로필 API 호출 안 함, 상태도 초기화
-      setIsLoggedIn(false);
-      setProfileImg("");
-      return;
-    }
-
-    const fetchProfileImage = async () => {
-      try {
-        const response = await tokenManager.fetchWithAuth(
-          `${process.env.NEXT_PUBLIC_BACKEND_ROOT_URL}/api/members/mypage/profile-image`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "same-origin",
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("프로필 이미지 불러오기 실패");
-        }
-
-        const data = await response.json();
-        setIsLoggedIn(true);
-        if (data.profileImage) {
-          setProfileImg(
-            process.env.NEXT_PUBLIC_IMAGE_ROOT_URL + data.profileImage
-          );
-        } else {
-          setProfileImg("");
-        }
-      } catch (error) {
-        setIsLoggedIn(false);
-        setProfileImg("");
-      }
-    };
-
-    fetchProfileImage();
-  }, []);
+  const { data: me, isLoading, error } = useGetMeQuery();
 
   const handleLogout = () => {
+    // 1) 로컬 토큰 제거
     localStorage.removeItem("Authorization");
-    setIsLoggedIn(false);
-    setProfileImg("");
+
+    // 2) Redux 상태 초기화
+    store.dispatch(clearCredentials());
+    store.dispatch(api.util.resetApiState());
+
+    // 3) 라우팅 이동
     router.push("/");
   };
 
-  if (isLoggedIn) {
+  // 로딩 중일 때
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-3">
+        <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
+        <span className="text-sm text-gray-400">Loading...</span>
+      </div>
+    );
+  }
+
+  // 로그인 상태 (me 데이터 있음)
+  if (me && !error) {
     return (
       <div className="flex items-center gap-3">
         <Link href="/mypage" prefetch={false}>
           <Image
-            src={profileImg || defaultImg}
-            alt="프로필"
+            src={me.profileImage || defaultImg}
+            alt={me.nickname || "프로필"}
             width={32}
             height={32}
-            className="h-8 w-8 rounded-full"
+            className="h-8 w-8 rounded-full object-cover"
           />
         </Link>
-        <button onClick={handleLogout} className="px-3 py-1 border rounded">
+        <button
+          onClick={handleLogout}
+          className="px-3 py-1 border rounded hover:bg-gray-50"
+        >
           로그아웃
         </button>
       </div>
     );
   }
 
+  // 비로그인 상태
   return (
     <div className="flex gap-2">
       <Link href="/signup">

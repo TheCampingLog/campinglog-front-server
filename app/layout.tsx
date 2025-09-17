@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import Providers from "./Providers";
+import Header from "./@header/default";
+import Footer from "./@footer/default";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -17,23 +20,21 @@ export const metadata: Metadata = {
   description: "캠핑 정보를 확인할 수 있는 사이트",
 };
 
-interface RootLayoutProps {
+interface RootLayout {
   children: React.ReactNode;
   header: React.ReactNode;
   footer: React.ReactNode;
 }
 
-export default function RootLayout(props: Readonly<RootLayoutProps>) {
-  const { children, header, footer } = props;
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col`}
-      >
-        {header}
-        <main className="flex-1">{children}</main>
-        {footer}
+      <body>
+        <Providers>
+          <Header />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

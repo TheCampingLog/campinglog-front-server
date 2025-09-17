@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import useMemberPassword from "@/lib/hooks/member/useMemberPassword";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { useDeleteMemberMutation } from "@/lib/redux/services/memberApi";
+import { useDispatch } from "react-redux";
+import { clearCredentials } from "@/lib/redux/slices/authSlice";
+import { api } from "@/lib/redux/services/api";
 
 export default function Password() {
   const [password, setPassword] = useState("");
@@ -15,6 +19,9 @@ export default function Password() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next");
+
+  const dispatch = useDispatch();
+  const [deleteMember] = useDeleteMemberMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,24 +35,21 @@ export default function Password() {
     }
   };
 
+  // 회원 탈퇴 실행
   const handleWithdraw = async () => {
     try {
-      const token = localStorage.getItem("Authorization");
-      const res = await fetch("/api/members/mypage", {
-        method: "DELETE",
-        headers: { Authorization: token ? `Bearer ${token}` : "" },
-      });
+      await deleteMember().unwrap(); // ✅ RTK Query로 탈퇴 요청
 
-      if (res.ok) {
-        localStorage.removeItem("Authorization");
-        setWithdrawModalOpen(false);
-        setWithdrawCompleteModalOpen(true);
-      } else {
-        // 실패시 메시지 표시(선택)
-        console.error("탈퇴 실패");
-      }
+      // 상태 정리 (로그아웃)
+      localStorage.removeItem("Authorization");
+      dispatch(clearCredentials());
+      dispatch(api.util.resetApiState());
+
+      setWithdrawModalOpen(false);
+      setWithdrawCompleteModalOpen(true);
     } catch (e) {
-      console.error(e);
+      console.error("회원 탈퇴 실패", e);
+      alert("회원 탈퇴 실패");
     }
   };
 
@@ -84,7 +88,7 @@ export default function Password() {
         title="회원 탈퇴"
         message="정말 탈퇴하시겠습니까?"
         onConfirm={handleWithdraw}
-        onClose={() => router.push("/mypage")} 
+        onClose={() => setWithdrawModalOpen(false)}
         confirmText="탈퇴"
         cancelText="취소"
       />

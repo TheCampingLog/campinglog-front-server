@@ -1,63 +1,45 @@
 "use client";
 
 import Link from "next/link";
+import { useRef, useState } from "react";
 import {
-  ResponseGetMember,
-  ResponseGetMemberActivitySummary,
-} from "@/lib/types/member/response";
-import { useEffect, useRef, useState } from "react";
+  useGetMeQuery,
+  useGetMySummaryQuery,
+  useSetProfileImageMutation,
+} from "@/lib/redux/services/memberApi";
 
-interface MemberMypageProps {
-  member: ResponseGetMember | null;
-  profileImage?: string;
-  activitySummary?: ResponseGetMemberActivitySummary;
-}
+function Mypage() {
+  // RTK Query 훅 사용
+  const { data: member, isLoading: meLoading, error: meError } = useGetMeQuery();
+  const { data: activitySummary } = useGetMySummaryQuery();
+  const [setProfileImage, { isLoading: isSaving }] = useSetProfileImageMutation();
 
-function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
-  const [currentProfileUrl, setCurrentProfileUrl] = useState<string>(
-    profileImage || "/image/profile-default.png"
-  );
+  // 파일 선택용 로컬 상태만 유지
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (profileImage) setCurrentProfileUrl(profileImage);
-  }, [profileImage]);
+  if (meLoading) return <div className="py-8 text-center">불러오는 중...</div>;
+  if (meError || !member) return <div className="py-8 text-center">회원 정보를 불러올 수 없습니다.</div>;
 
-  if (!member) {
-    return (
-      <div className="text-center py-8">회원 정보를 불러올 수 없습니다.</div>
-    );
-  }
-
-  const openFilePicker = () => fileInputRef.current?.click();
-
-  // 파일 선택만 담당 (업로드는 따로 '저장' 버튼에서)
+  // 파일 선택 이벤트
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
     setSelectedFile(file);
   };
 
+  // 파일 선택 취소
   const handleCancel = () => {
     setSelectedFile(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  // 업로드 실행
   const handleUpload = async () => {
     if (!selectedFile) {
       alert("업로드할 이미지를 먼저 선택해주세요.");
       return;
     }
 
-    const token = localStorage.getItem("Authorization");
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      window.location.href = "/login";
-      return;
-    }
-
-    setIsUploading(true);
     try {
       // 1) 이미지 서버 업로드
       const formData = new FormData();
@@ -72,39 +54,24 @@ function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
       if (!uploadRes.ok) throw new Error("이미지 업로드 실패");
 
       const data = await uploadRes.json();
-      const uploadedUrl = data?.file?.url || "";
 
-      // 2) 백엔드에 최종 반영
-      const backend = process.env.NEXT_PUBLIC_BACKEND_ROOT_URL;
-      const saveRes = await fetch(
-        `${backend}/api/members/mypage/profile-image`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ profileImage: uploadedUrl }),
-        }
-      );
-      if (!saveRes.ok) {
-        const err = await saveRes.json().catch(() => ({}));
-        throw new Error(err.message || "프로필 이미지 저장 실패");
-      }
+      console.log("=== 업로드 서버 응답 ===", data);
 
-      // 3) 화면 갱신 및 초기화
-      setCurrentProfileUrl(uploadedUrl);
+      const uploadedUrl = data?.file?.url
+        ? `${imageServer}${data.file.url}` // 절대 URL로 변환
+        : "";
+
+      if (!uploadedUrl) throw new Error("업로드 응답이 비어있습니다.");
+
+      // 2) RTK Mutation 호출 → DB에 반영
+      await setProfileImage({ profileImage: uploadedUrl }).unwrap();
+
+      // 3) 캐시 무효화 덕분에 Header + Mypage 모두 자동 갱신됨
       alert("프로필 이미지가 변경되었습니다.");
       handleCancel();
     } catch (error) {
       console.error(error);
-      alert(
-        error instanceof Error
-          ? error.message
-          : "업로드 중 오류가 발생했습니다."
-      );
-    } finally {
-      setIsUploading(false);
+      alert(error instanceof Error ? error.message : "업로드 중 오류가 발생했습니다.");
     }
   };
 
@@ -114,12 +81,12 @@ function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
         {/* 프로필 (왼쪽) */}
         <div className="col-span-1 flex flex-col items-center">
           <img
-            src={currentProfileUrl}
+            src={member.profileImage || "/image/profile-default.png"}
             alt="프로필 이미지"
             className="w-40 h-40 object-cover rounded-full mb-4 border"
           />
 
-          {/* 숨긴 파일 입력 */}
+          {/* 숨겨진 파일 입력 */}
           <input
             ref={fileInputRef}
             type="file"
@@ -131,9 +98,9 @@ function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
           {/* 버튼 영역 */}
           {!selectedFile ? (
             <button
-              onClick={openFilePicker}
+              onClick={() => fileInputRef.current?.click()}
               className="px-3 py-2 bg-gray-200 rounded-lg text-sm"
-              disabled={isUploading}
+              disabled={isSaving}
             >
               사진 수정
             </button>
@@ -142,34 +109,35 @@ function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
               <button
                 onClick={handleUpload}
                 className="px-3 py-2 bg-campinggreen text-white rounded-lg text-sm disabled:opacity-60"
-                disabled={isUploading}
+                disabled={isSaving}
               >
-                {isUploading ? "업로드 중..." : "저장"}
+                {isSaving ? "업로드 중..." : "저장"}
               </button>
               <button
                 onClick={handleCancel}
                 className="px-3 py-2 bg-gray-200 rounded-lg text-sm"
-                disabled={isUploading}
+                disabled={isSaving}
               >
                 취소
               </button>
             </div>
           )}
-          {/* 선택한 파일명 간단 노출 (미리보기는 없음) */}
+
+          {/* 선택한 파일명 간단 노출 */}
           {selectedFile && (
             <p className="mt-2 text-xs text-gray-500">{selectedFile.name}</p>
           )}
         </div>
 
-        {/* 활동요약 + 회원상세 (오른쪽) */}
+        {/* 활동 요약 + 회원 상세 (오른쪽) */}
         <div className="col-span-2 flex flex-col gap-6">
           <div className="bg-[#FFF9E6] rounded-lg p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-bold">내 활동 요약</h4>
-              {member?.memberGrade && (
+              {member?.grade && (
                 <img
-                  src={`/image/${member.memberGrade}.png`}
-                  alt={`${member.memberGrade} 뱃지`}
+                  src={`/image/${member.grade}.png`}
+                  alt={`${member.grade} 뱃지`}
                   className="w-24 h-24"
                 />
               )}
