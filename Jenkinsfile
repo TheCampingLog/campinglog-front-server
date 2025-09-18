@@ -98,7 +98,7 @@ pipeline {
 
                     // Docker 이미지 빌드
                     sh '''
-                        docker build --network campinglog-network -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
                         docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
                     '''
                 }
