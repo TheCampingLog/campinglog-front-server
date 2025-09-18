@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import { imageUrl } from "./lib/config";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   images: {
     remotePatterns: [
       new URL(imageUrl + "/images/**"),
