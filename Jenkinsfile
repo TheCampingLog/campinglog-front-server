@@ -68,16 +68,6 @@ pipeline {
             }
         }
 
-        // 4단계: 패키지 빌드
-        stage('Package') {
-            steps {
-                echo 'module 설치'
-                sh 'npm install'
-                echo '.nextJS 파일을 생성합니다...'
-                sh 'npm run build'
-            }
-        }
-
         // 5단계: 기존 컨테이너 정리
         stage('Cleanup') {
             steps {
@@ -108,7 +98,7 @@ pipeline {
 
                     // Docker 이미지 빌드
                     sh '''
-                        docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
+                        docker build --network campinglog-network -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
                         docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
                     '''
                 }
