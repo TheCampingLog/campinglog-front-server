@@ -11,8 +11,8 @@ pipeline {
         DOCKER_IMAGE = "${APP_NAME}"
         DOCKER_TAG = "${BUILD_NUMBER}"
         CONTAINER_NAME = "${APP_NAME}-container"
-        APP_PORT = '8000'
-        HOST_PORT = '80'  // 호스트에서 사용할 포트 (필요시 변경)
+        APP_PORT = '3000'
+        HOST_PORT = '3000'  // 호스트에서 사용할 포트 (필요시 변경)
 
         // Docker 관련 환경 변수
         DOCKERFILE_PATH = 'Dockerfile'
