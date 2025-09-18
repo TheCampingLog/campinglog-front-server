@@ -71,6 +71,8 @@ pipeline {
         // 4단계: 패키지 빌드
         stage('Package') {
             steps {
+                echo 'module 설치'
+                sh 'npm install'
                 echo '.nextJS 파일을 생성합니다...'
                 sh 'npm run build'
             }
