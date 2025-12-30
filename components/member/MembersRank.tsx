@@ -47,7 +47,7 @@ function MembersRank() {
               </span>
               {/* ✅ 뱃지 이미지 */}
               <Image
-                src={`/image/${ranking.memberGrade}.png`}
+                src={`/image/${ranking.memberGrade}.png`.toLocaleLowerCase()}
                 alt={`${ranking.memberGrade} 배지`}
                 width={24}
                 height={24}
