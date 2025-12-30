@@ -44,7 +44,7 @@ export default function Page() {
   const [isKakaoLoading, setIsKakaoLoading] = useState<boolean>(false);
 
   // 카카오 SDK 설정
-  const KAKAO_REDIRECT_URI = "http://localhost:8080/oauth2/authorization/kakao"; // 실제 리다이렉트 URI로 변경
+  const KAKAO_REDIRECT_URI = `${backendUrl}/oauth2/authorization/kakao`; // 실제 리다이렉트 URI로 변경
 
   // 이메일 유효성 검사
   const validateEmail = (email: string): boolean => {

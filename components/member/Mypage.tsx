@@ -63,8 +63,7 @@ function Mypage({ member, profileImage, activitySummary }: MemberMypageProps) {
       const formData = new FormData();
       formData.append("image", selectedFile);
 
-      const imageServer =
-        process.env.NEXT_PUBLIC_IMAGE_ROOT_URL || "http://localhost:8888";
+      const imageServer = process.env.NEXT_PUBLIC_IMAGE_ROOT_URL;
       const uploadRes = await fetch(`${imageServer}/images/member`, {
         method: "POST",
         body: formData,

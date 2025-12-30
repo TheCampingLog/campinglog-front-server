@@ -9,9 +9,12 @@ import {
 
 export default function MemberMypage() {
   const [member, setMember] = useState<ResponseGetMember | null>(null);
-  const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
-  const [activitySummary, setActivitySummary] =
-    useState<ResponseGetMemberActivitySummary | undefined>(undefined);
+  const [profileImage, setProfileImage] = useState<string | undefined>(
+    undefined
+  );
+  const [activitySummary, setActivitySummary] = useState<
+    ResponseGetMemberActivitySummary | undefined
+  >(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +30,7 @@ export default function MemberMypage() {
           {
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,  
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -36,27 +39,28 @@ export default function MemberMypage() {
         setMember(memberData);
 
         // 프로필 이미지
-        const IMG_ROOT = process.env.NEXT_PUBLIC_IMAGE_ROOT_URL!;  // http://localhost:8888
+        const IMG_ROOT = process.env.NEXT_PUBLIC_IMAGE_ROOT_URL!;
         const DEFAULT_PROFILE = `${IMG_ROOT}/images/member/profile/default.png`; // public 폴더 기본 이미지
 
         if (memberData.profileImage) {
-        // 예: "member/profile/abc.png" 또는 "/member/profile/abc.png"
-        const path = memberData.profileImage.startsWith("/")
+          // 예: "member/profile/abc.png" 또는 "/member/profile/abc.png"
+          const path = memberData.profileImage.startsWith("/")
             ? memberData.profileImage
             : `/${memberData.profileImage}`;
 
-        setProfileImage(`${IMG_ROOT}${path}`);
+          setProfileImage(`${IMG_ROOT}${path}`);
         } else {
-        setProfileImage(DEFAULT_PROFILE);
+          setProfileImage(DEFAULT_PROFILE);
         }
 
         // 활동 요약
         const summaryRes = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_ROOT_URL + "/api/members/mypage/summary",
+          process.env.NEXT_PUBLIC_BACKEND_ROOT_URL +
+            "/api/members/mypage/summary",
           {
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,   
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -83,10 +87,10 @@ export default function MemberMypage() {
   if (error) return <p>Error: {error}</p>;
 
   return (
-      <Mypage
-        member={member}
-        profileImage={profileImage}
-        activitySummary={activitySummary}
-      />
+    <Mypage
+      member={member}
+      profileImage={profileImage}
+      activitySummary={activitySummary}
+    />
   );
 }
