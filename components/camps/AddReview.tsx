@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { RequestAddReview } from "@/lib/types/camps/request";
-import { backendUrl } from "@/lib/config";
+import { backendUrl, imageUrl } from "@/lib/config";
 
 interface AddReviewProps {
   mapX: string;
@@ -28,7 +28,7 @@ export default function AddReview({ mapX, mapY, onSuccess }: AddReviewProps) {
       formData.append("image", file);
 
       try {
-        const res = await fetch("http://localhost:8001/images/review", {
+        const res = await fetch(`${imageUrl}/images/review`, {
           method: "POST",
           body: formData,
         });
@@ -51,7 +51,7 @@ export default function AddReview({ mapX, mapY, onSuccess }: AddReviewProps) {
     setError("");
 
     // 이미지가 없으면 기본 이미지 파일명으로 설정
-    const imageToSend = reviewImage || "/public/image/camp-default.png"; 
+    const imageToSend = reviewImage || "public/image/camp-default.png";
 
     const body: RequestAddReview = {
       mapX,
@@ -67,7 +67,10 @@ export default function AddReview({ mapX, mapY, onSuccess }: AddReviewProps) {
     try {
       const res = await fetch(`${backendUrl}/api/camps/members/reviews`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(body),
       });
 
@@ -90,10 +93,13 @@ export default function AddReview({ mapX, mapY, onSuccess }: AddReviewProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4 border rounded">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-4 p-4 border rounded"
+    >
       <textarea
         value={reviewContent}
-        onChange={e => setReviewContent(e.target.value)}
+        onChange={(e) => setReviewContent(e.target.value)}
         placeholder="리뷰 내용을 입력하세요"
         required
         className="border p-2 rounded"
@@ -105,7 +111,7 @@ export default function AddReview({ mapX, mapY, onSuccess }: AddReviewProps) {
         max={5}
         step={0.5}
         value={reviewScore}
-        onChange={e => setReviewScore(Number(e.target.value))}
+        onChange={(e) => setReviewScore(Number(e.target.value))}
         placeholder="별점 (0.5~5)"
         required
         className="border p-2 rounded"
@@ -120,7 +126,7 @@ export default function AddReview({ mapX, mapY, onSuccess }: AddReviewProps) {
         />
         {reviewImage && (
           <img
-            src={`http://localhost:8001/images/review/${reviewImage}`}
+            src={`${imageUrl}/images/review/${reviewImage}`}
             alt="미리보기"
             className="mt-4 max-h-48 rounded"
           />
@@ -138,10 +144,6 @@ export default function AddReview({ mapX, mapY, onSuccess }: AddReviewProps) {
   );
 }
 
-
-
-
-
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -149,9 +151,9 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // 백엔드(Spring) API 주소
-    const backendUrl = "http://localhost:8080/api/camps/members/reviews";
+    const reviewList = `${backendUrl}/api/camps/members/reviews`;
 
-    const res = await fetch(backendUrl, {
+    const res = await fetch(reviewList, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -166,5 +168,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "리뷰 등록 실패" }, { status: 500 });
   }
 }
-
-

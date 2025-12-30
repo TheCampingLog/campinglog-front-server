@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { backendUrl } from "@/lib/config";
+import { backendUrl, imageUrl } from "@/lib/config";
 import ConfirmModal from "@/components/common/ConfirmModal";
 
 type Review = {
@@ -116,7 +116,7 @@ export default function Reviews() {
       formData.append("image", file);
 
       try {
-        const res = await fetch("http://localhost:8001/images/review", {
+        const res = await fetch(`${imageUrl}/images/review`, {
           method: "POST",
           body: formData,
         });
@@ -309,7 +309,7 @@ export default function Reviews() {
               />
               {editImage && (
                 <img
-                  src={`http://localhost:8001/images/review/${editImage}`}
+                  src={`${imageUrl}/images/review/${editImage}`}
                   alt="미리보기"
                   className="mt-4 max-h-48 rounded"
                 />

@@ -70,7 +70,7 @@ export default function BoardForm({
       formData.append("image", file);
 
       try {
-        const res = await fetch("http://localhost:8888/images/board", {
+        const res = await fetch(`${imageUrl}/images/board`, {
           method: "POST",
           body: formData,
         });
@@ -78,7 +78,7 @@ export default function BoardForm({
           throw new Error("이미지 업로드 실패");
         }
         const data = await res.json();
-        setImageUrl("http://localhost:8888" + data.file.url); // 이미지 서버가 반환하는 URL
+        setImageUrl(imageUrl + data.file.url); // 이미지 서버가 반환하는 URL
       } catch (err) {
         alert("이미지 업로드에 실패했습니다.");
         setImageUrl("");

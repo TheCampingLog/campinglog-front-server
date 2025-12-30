@@ -7,6 +7,7 @@ import {
   ResponseGetCampWrapper,
   ResponseGetReviewList,
 } from "@/lib/types/camps/response";
+import { imageUrl } from "@/lib/config";
 
 interface ReviewListProps {
   reviewList: ResponseGetCampWrapper<ResponseGetReviewList> | null;
@@ -44,7 +45,7 @@ function ReviewList({ reviewList, mapX, mapY }: ReviewListProps) {
           className="flex items-center gap-6 py-6 border-b"
         >
           <img
-            src={`http://localhost:8001/images/review/${review.reviewImage}`}
+            src={`${imageUrl}/images/review/${review.reviewImage}`}
             alt="리뷰 이미지"
             width={120}
             height={120}
